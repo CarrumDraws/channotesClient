@@ -15,15 +15,11 @@ Libraries:
 
 
 Todo: 
-- Redux + Local Storage [DONE]
-- React Router [DONE]
-- Split Sign Up 
-- Google Authentication
+- Create Form + Route Backend
 - Material UI
 - Formik, Yup
 
 Questions: 
-- How do i get the image file of my google profile picture??
 - Should I store userdata in local storage or make an API call each time?
 - How should I deal with data thats been manipulated in local storage?
 
@@ -35,6 +31,9 @@ Ideas:
 - Possibly split up redux into multiple slices?
 
 Structure:
-
 Sub-Component: Tiny reusable aspects of the UI
 Components: Chunks made up of sub-components
+
+NOTES: -------------
+
+loginPage handleCredentialResponse() is a complex function. Based on google "sub" value and email, it checks if you have an account or not. If you do have an account, it routes to homepage. If you don't have an account, it creates a new user, complete with profile picture (Needs to download profile picture as a File from google URL first), then rotues to /editProfile.

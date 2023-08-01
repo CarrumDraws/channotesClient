@@ -63,23 +63,41 @@ function Login() {
           })
         );
         // Make New User w/ FormData
-        const formData = new FormData();
-        fetch(`${url}/auth/signup`, {
-          method: "POST",
-          headers: { "Content-Type": "multipart/form-data" },
-          body: JSON.stringify({
-            email: userObject.email,
-            google_id: userObject.sub,
-            first_name: userObject.given_name,
-            last_name: userObject.family_name,
-            username: userObject.name,
-            image: userObject.picture,
-          }),
-        }).then(async (res) => {
+        // Fetch the file
+        fetch(userObject.picture).then(async (res) => {
           if (res.ok) {
-            navigate("/editprofile");
+            // Get the Image File from url
+            const blob = await res.blob();
+            const file = new File([blob], `${userObject.name}.jpg`, {
+              type: blob.type,
+            });
+            let values = {
+              email: userObject.email,
+              google_id: userObject.sub,
+              first_name: userObject.given_name,
+              last_name: userObject.family_name,
+              username: userObject.name,
+            };
+            const formData = new FormData();
+            for (let value in values) {
+              formData.append(value, values[value]);
+            }
+
+            formData.append("image", file);
+
+            fetch(`${url}/auth/signup`, {
+              method: "POST",
+              body: formData,
+            }).then(async (res) => {
+              if (res.ok) {
+                navigate("/editprofile");
+              } else {
+                let data = await res.json();
+                console.log(data);
+              }
+            });
           } else {
-            console.log("Error Creating New User");
+            throw new Error(`File Download Failed: ${response.status}`);
           }
         });
       }
