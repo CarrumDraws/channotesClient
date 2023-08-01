@@ -19,7 +19,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 
-// Code Lifted from https://redux-toolkit.js.org/usage/usage-guide
+// Code from https://redux-toolkit.js.org/usage/usage-guide
 const persistConfig = {
   key: "root",
   version: 1,

@@ -1,6 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { mode: "light", user: null, token: null, notes: [] };
+let dev = "http://localhost:5000";
+let prod = "https://carrums-merntut-server.onrender.com";
+
+const initialState = {
+  mode: "light", // Dark/Light Mode
+  email: null, // Email, used as Username
+  google_id: null, // Google 'sub' value, used as Password
+  chan_token: null, // Backend JWTToken, used as ID
+  userName: null,
+  firstName: null,
+  lastName: null,
+  profileUrl: null,
+  notes: [],
+  url: process.env.NODE_ENV === "development" ? dev : prod, // Switches URL based on environment type
+};
 
 const userSlice = createSlice({
   name: "user",
@@ -10,18 +24,31 @@ const userSlice = createSlice({
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
     },
-    // Set User + JWT Token
+    // Set User Login
     setLogin: (state, action) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
+      state.email = action.payload.email;
+      state.google_id = action.payload.google_id;
     },
-    // Removes User + JWT Token
+    // Set Chan JWT Token
+    setToken: (state, action) => {
+      state.chan_token = action.payload.chan_token;
+    },
+    // Set User Data (userName, firstName, lastName, profileUrl)
+    setUserData: (state, action) => {
+      state.userName = action.payload.userName;
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
+      state.profileUrl = action.payload.profileUrl;
+    },
+    // Removes User Login + JWT Token
     setLogout: (state) => {
-      state.user = null;
-      state.token = null;
+      state.chan_token = null;
+      state.email = null;
+      state.google_id = null;
     },
   },
 });
 
-export const { setMode, setUser } = userSlice.actions; // Used in Components
+export const { setMode, setLogin, setToken, setUserData, setLogout } =
+  userSlice.actions; // Used in Components
 export default userSlice.reducer; // Used in Store
