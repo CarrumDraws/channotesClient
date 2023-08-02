@@ -16,6 +16,8 @@ Libraries:
 
 Todo: 
 - Create Form + Route Backend
+- Figure Out persisting "logged in" state
+- Create single "user" state
 - Material UI
 - Formik, Yup
 

@@ -11,7 +11,7 @@ const initialState = {
   userName: null,
   firstName: null,
   lastName: null,
-  profileUrl: null,
+  picturePath: null,
   notes: [],
   url: process.env.NODE_ENV === "development" ? dev : prod, // Switches URL based on environment type
 };
@@ -33,12 +33,12 @@ const userSlice = createSlice({
     setToken: (state, action) => {
       state.chan_token = action.payload.chan_token;
     },
-    // Set User Data (userName, firstName, lastName, profileUrl)
+    // Set User Data (userName, firstName, lastName, picturePath)
     setUserData: (state, action) => {
       state.userName = action.payload.userName;
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
-      state.profileUrl = action.payload.profileUrl;
+      state.picturePath = action.payload.picturePath;
     },
     // Removes User Login + JWT Token
     setLogout: (state) => {

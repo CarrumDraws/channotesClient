@@ -48,7 +48,7 @@ function Login() {
             userName: data.user.username,
             firstName: data.user.first_name,
             lastName: data.user.last_name,
-            profileUrl: data.user.url,
+            picturePath: data.user.url,
           })
         );
         navigate("/home");
@@ -59,7 +59,7 @@ function Login() {
             userName: userObject.name,
             firstName: userObject.given_name,
             lastName: userObject.family_name,
-            profileUrl: userObject.picture,
+            picturePath: userObject.picture,
           })
         );
         // Make New User w/ FormData

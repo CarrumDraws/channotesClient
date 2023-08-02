@@ -12,7 +12,8 @@ function Form() {
   const userName = useSelector((state) => state.userName);
   const firstName = useSelector((state) => state.firstName);
   const lastName = useSelector((state) => state.lastName);
-  const profileUrl = useSelector((state) => state.profileUrl);
+  const picturePath = useSelector((state) => state.picturePath); // How to display image? Link from Backend?
+
   // Schemas
   const profileSchema = yup.object().shape({
     firstName: yup.string().required("required"),
@@ -27,26 +28,22 @@ function Form() {
     firstName: firstName,
     lastName: lastName,
     userName: userName,
-    profileUrl: profileUrl,
+    picturePath: picturePath,
   };
 
-  const register = async (values, onSubmitProps) => {
-    // this allows us to send form info with image
+  // Send data to Backend + Save to local storage
+  const handleFormSubmit = async (values, onSubmitProps) => {
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
     formData.append("picturePath", values.picture.name);
-    const savedUserResponse = await fetch(`${url}/auth/register`, {
-      method: "POST",
+    const savedUserResponse = await fetch(`${url}/users`, {
+      method: "PUT",
       body: formData,
     });
-    const savedUser = await savedUserResponse.json();
+    await savedUserResponse.json();
     onSubmitProps.resetForm();
-  };
-
-  const handleFormSubmit = async (values, onSubmitProps) => {
-    await register(values, onSubmitProps);
   };
 
   return (
@@ -66,6 +63,7 @@ function Form() {
         errors, // Form validation errors
       }) => (
         <form onSubmit={handleSubmit}>
+          <img src={picturePath} alt="User" />
           <label htmlFor="firstName">First Name</label>
           <input
             id="firstName"
@@ -84,7 +82,7 @@ function Form() {
             value={values.lastName}
           />
 
-          <label htmlFor="email">Email Address</label>
+          <label htmlFor="userName">Username</label>
           <input
             id="userName"
             name="userName"
