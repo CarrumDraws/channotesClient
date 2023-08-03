@@ -8,9 +8,9 @@ const initialState = {
   email: null, // Email, used as Username
   google_id: null, // Google 'sub' value, used as Password
   chan_token: null, // Backend JWTToken, used as ID
-  userName: null,
-  firstName: null,
-  lastName: null,
+  username: null,
+  first_name: null,
+  last_name: null,
   picturePath: null,
   notes: [],
   url: process.env.NODE_ENV === "development" ? dev : prod, // Switches URL based on environment type
@@ -33,11 +33,11 @@ const userSlice = createSlice({
     setToken: (state, action) => {
       state.chan_token = action.payload.chan_token;
     },
-    // Set User Data (userName, firstName, lastName, picturePath)
+    // Set User Data (username, first_name, last_name, picturePath)
     setUserData: (state, action) => {
-      state.userName = action.payload.userName;
-      state.firstName = action.payload.firstName;
-      state.lastName = action.payload.lastName;
+      state.username = action.payload.username;
+      state.first_name = action.payload.first_name;
+      state.last_name = action.payload.last_name;
       state.picturePath = action.payload.picturePath;
     },
     // Removes User Login + JWT Token

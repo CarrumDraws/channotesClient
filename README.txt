@@ -39,3 +39,8 @@ Components: Chunks made up of sub-components
 NOTES: -------------
 
 loginPage handleCredentialResponse() is a complex function. Based on google "sub" value and email, it checks if you have an account or not. If you do have an account, it routes to homepage. If you don't have an account, it creates a new user, complete with profile picture (Needs to download profile picture as a File from google URL first), then rotues to /editProfile.
+
+
+QUESTIONS: ----------
+
+- Is it safe to store userdata in localStorage? The iuser can modify it at will...

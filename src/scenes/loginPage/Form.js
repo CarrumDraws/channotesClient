@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,42 +8,62 @@ import Dropzone from "react-dropzone"; // File Upload
 
 function Form() {
   const dispatch = useDispatch();
+  const chan_token = useSelector((state) => state.chan_token);
   const url = useSelector((state) => state.url);
-  const userName = useSelector((state) => state.userName);
-  const firstName = useSelector((state) => state.firstName);
-  const lastName = useSelector((state) => state.lastName);
-  const picturePath = useSelector((state) => state.picturePath); // How to display image? Link from Backend?
+  const username = useSelector((state) => state.username);
+  const first_name = useSelector((state) => state.first_name);
+  const last_name = useSelector((state) => state.last_name);
+  let [picturePath, setPicturePath] = useState(
+    useSelector((state) => state.picturePath)
+  ); // URL of current profilePic
 
   // Schemas
   const profileSchema = yup.object().shape({
-    firstName: yup.string().required("required"),
-    lastName: yup.string().required("required"),
-    userName: yup.string().required("required"),
-    picture: yup.string().required("required"),
+    first_name: yup.string().required("required"),
+    last_name: yup.string().required("required"),
+    username: yup.string().required("required"),
+    picturePath: yup.string().required("required"),
   });
 
   // NOTE: if needed, we can use the same FORM component for multiple situations.
 
   const initialValuesProfile = {
-    firstName: firstName,
-    lastName: lastName,
-    userName: userName,
+    first_name: first_name,
+    last_name: last_name,
+    username: username,
     picturePath: picturePath,
   };
 
   // Send data to Backend + Save to local storage
   const handleFormSubmit = async (values, onSubmitProps) => {
+    console.log("Started...");
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
-    formData.append("picturePath", values.picture.name);
+    console.log(values);
+    formData.append("image", values.picturePath.name);
     const savedUserResponse = await fetch(`${url}/users`, {
       method: "PUT",
+      headers: { Authorization: `Bearer ${chan_token}` },
       body: formData,
     });
+    console.log("Finished");
     await savedUserResponse.json();
     onSubmitProps.resetForm();
+  };
+
+  const handleDrop = (acceptedFile) => {
+    setPicturePath(acceptedFile);
+    console.log(acceptedFile);
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      var image = document.createElement("img"); // the result image data
+      // Should display image in ref maybe
+      image.src = e.target.result;
+      document.body.appendChild(image);
+    };
+    reader.readAsDataURL(acceptedFile);
   };
 
   return (
@@ -64,33 +84,57 @@ function Form() {
       }) => (
         <form onSubmit={handleSubmit}>
           <img src={picturePath} alt="User" />
-          <label htmlFor="firstName">First Name</label>
+          <Dropzone
+            acceptedFiles=".jpg, .jpeg, .png"
+            multiple={false}
+            onDrop={(acceptedFiles) => {
+              setFieldValue("picturePath", acceptedFiles[0]);
+              handleDrop(acceptedFiles[0]);
+            }}
+          >
+            {({ getRootProps, getInputProps }) => (
+              <section>
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  {!values.picturePath.name ? (
+                    <p>Add Picture Here</p>
+                  ) : (
+                    <p>{values.picturePath.name}</p> // If there is a file, display filename
+                  )}
+                </div>
+              </section>
+            )}
+          </Dropzone>
+
+          <label htmlFor="first_name">First Name</label>
           <input
-            id="firstName"
-            name="firstName"
+            id="first_name"
+            name="first_name"
             type="text"
             onChange={handleChange}
-            value={values.firstName}
+            value={values.first_name}
           />
 
-          <label htmlFor="lastName">Last Name</label>
+          <label htmlFor="last_name">Last Name</label>
           <input
-            id="lastName"
-            name="lastName"
+            id="last_name"
+            name="last_name"
             type="text"
             onChange={handleChange}
-            value={values.lastName}
+            value={values.last_name}
           />
 
-          <label htmlFor="userName">Username</label>
+          <label htmlFor="username">Username</label>
           <input
-            id="userName"
-            name="userName"
+            id="username"
+            name="username"
             type="text"
             onChange={handleChange}
-            value={values.userName}
+            value={values.username}
           />
           <button type="submit">Submit</button>
+          {console.log(errors)}
+          {/* {console.log(values)} */}
         </form>
       )}
     </Formik>

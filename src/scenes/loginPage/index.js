@@ -45,28 +45,21 @@ function Login() {
         dispatch(setToken({ chan_token: data.token }));
         dispatch(
           setUserData({
-            userName: data.user.username,
-            firstName: data.user.first_name,
-            lastName: data.user.last_name,
+            username: data.user.username,
+            first_name: data.user.first_name,
+            last_name: data.user.last_name,
             picturePath: data.user.url,
           })
         );
         navigate("/home");
       } else {
-        // No User Found: Set User Data from Google + Create New User + route to /editprofile
-        dispatch(
-          setUserData({
-            userName: userObject.name,
-            firstName: userObject.given_name,
-            lastName: userObject.family_name,
-            picturePath: userObject.picture,
-          })
-        );
-        // Make New User w/ FormData
-        // Fetch the file
+        // No User Found: Create New User + get newly created user + Set User Data from Google + route to /editprofile
+
+        // 1. Make New User w/ FormData
+        // 1a. Fetch the file
         fetch(userObject.picture).then(async (res) => {
           if (res.ok) {
-            // Get the Image File from url
+            // 1b. Get the Image File from url
             const blob = await res.blob();
             const file = new File([blob], `${userObject.name}.jpg`, {
               type: blob.type,
@@ -85,11 +78,24 @@ function Login() {
 
             formData.append("image", file);
 
+            // 1c. Create New User
             fetch(`${url}/auth/signup`, {
               method: "POST",
               body: formData,
             }).then(async (res) => {
               if (res.ok) {
+                // 2. Set User Data from Google
+                let data = await res.json();
+                dispatch(setToken({ chan_token: data.token }));
+                dispatch(
+                  setUserData({
+                    username: data.user.username,
+                    first_name: data.user.first_name,
+                    last_name: data.user.last_name,
+                    picturePath: data.user.url,
+                  })
+                );
+                // 3. Navigate
                 navigate("/editprofile");
               } else {
                 let data = await res.json();
@@ -97,6 +103,7 @@ function Login() {
               }
             });
           } else {
+            console.log("File Download Failed");
             throw new Error(`File Download Failed: ${response.status}`);
           }
         });
