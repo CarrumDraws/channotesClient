@@ -11,7 +11,7 @@ const initialState = {
   username: null,
   first_name: null,
   last_name: null,
-  picturePath: null,
+  picturePath: null, // URL of current profile pic
   notes: [],
   url: process.env.NODE_ENV === "development" ? dev : prod, // Switches URL based on environment type
 };

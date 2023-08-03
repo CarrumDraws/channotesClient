@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { setUserData } from "../../state";
 
 import { Formik } from "formik"; // Error Handling/Form Validation
 import * as yup from "yup"; // Form Validation
@@ -13,16 +14,14 @@ function Form() {
   const username = useSelector((state) => state.username);
   const first_name = useSelector((state) => state.first_name);
   const last_name = useSelector((state) => state.last_name);
-  let [picturePath, setPicturePath] = useState(
-    useSelector((state) => state.picturePath)
-  ); // URL of current profilePic
+  const picturePath = useSelector((state) => state.picturePath);
 
   // Schemas
   const profileSchema = yup.object().shape({
     first_name: yup.string().required("required"),
     last_name: yup.string().required("required"),
     username: yup.string().required("required"),
-    picturePath: yup.string().required("required"),
+    image: yup.string().required("required"),
   });
 
   // NOTE: if needed, we can use the same FORM component for multiple situations.
@@ -31,34 +30,40 @@ function Form() {
     first_name: first_name,
     last_name: last_name,
     username: username,
-    picturePath: picturePath,
+    image: picturePath,
   };
 
   // Send data to Backend + Save to local storage
   const handleFormSubmit = async (values, onSubmitProps) => {
-    console.log("Started...");
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
     console.log(values);
-    formData.append("image", values.picturePath.name);
+    formData.append("image", values.image.name);
     const savedUserResponse = await fetch(`${url}/users`, {
       method: "PUT",
       headers: { Authorization: `Bearer ${chan_token}` },
       body: formData,
     });
-    console.log("Finished");
-    await savedUserResponse.json();
+    let data = await savedUserResponse.json();
+    dispatch(
+      setUserData({
+        username: data.username,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        picturePath: data.url,
+      })
+    );
+
     onSubmitProps.resetForm();
+    // Navigate to Homepage ->
   };
 
   const handleDrop = (acceptedFile) => {
-    setPicturePath(acceptedFile);
-    console.log(acceptedFile);
     const reader = new FileReader();
     reader.onload = function (e) {
-      var image = document.createElement("img"); // the result image data
+      var image = document.createElement("img"); // result image data
       // Should display image in ref maybe
       image.src = e.target.result;
       document.body.appendChild(image);
@@ -88,7 +93,7 @@ function Form() {
             acceptedFiles=".jpg, .jpeg, .png"
             multiple={false}
             onDrop={(acceptedFiles) => {
-              setFieldValue("picturePath", acceptedFiles[0]);
+              setFieldValue("image", acceptedFiles[0]);
               handleDrop(acceptedFiles[0]);
             }}
           >
@@ -96,10 +101,10 @@ function Form() {
               <section>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  {!values.picturePath.name ? (
+                  {!values.image.name ? (
                     <p>Add Picture Here</p>
                   ) : (
-                    <p>{values.picturePath.name}</p> // If there is a file, display filename
+                    <p>{values.image.name}</p> // If there is a file, display filename
                   )}
                 </div>
               </section>
