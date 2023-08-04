@@ -27,7 +27,6 @@ function Login() {
   // Google Callback Function
   function handleCredentialResponse(response) {
     var userObject = jose.decodeJwt(response.credential);
-
     // Set Login Info
     dispatch(setLogin({ email: userObject.email, google_id: userObject.sub }));
 
@@ -48,7 +47,7 @@ function Login() {
             username: data.user.username,
             first_name: data.user.first_name,
             last_name: data.user.last_name,
-            picturePath: data.user.url,
+            image: data.user.image,
           })
         );
         navigate("/home");
@@ -57,6 +56,7 @@ function Login() {
 
         // 1. Make New User w/ FormData
         // 1a. Fetch the file
+        console.log(userObject);
         fetch(userObject.picture).then(async (res) => {
           if (res.ok) {
             // 1b. Get the Image File from url
@@ -92,7 +92,7 @@ function Login() {
                     username: data.user.username,
                     first_name: data.user.first_name,
                     last_name: data.user.last_name,
-                    picturePath: data.user.url,
+                    image: data.user.image,
                   })
                 );
                 // 3. Navigate

@@ -14,7 +14,7 @@ function Form() {
   const username = useSelector((state) => state.username);
   const first_name = useSelector((state) => state.first_name);
   const last_name = useSelector((state) => state.last_name);
-  const picturePath = useSelector((state) => state.picturePath);
+  const image = useSelector((state) => state.image);
 
   // Schemas
   const profileSchema = yup.object().shape({
@@ -30,7 +30,7 @@ function Form() {
     first_name: first_name,
     last_name: last_name,
     username: username,
-    image: picturePath,
+    image: image,
   };
 
   // Send data to Backend + Save to local storage
@@ -41,23 +41,28 @@ function Form() {
     }
     console.log(values);
     formData.append("image", values.image.name);
-    const savedUserResponse = await fetch(`${url}/users`, {
+    fetch(`${url}/users`, {
       method: "PUT",
       headers: { Authorization: `Bearer ${chan_token}` },
       body: formData,
-    });
-    let data = await savedUserResponse.json();
-    dispatch(
-      setUserData({
-        username: data.username,
-        first_name: data.first_name,
-        last_name: data.last_name,
-        picturePath: data.url,
-      })
-    );
+    }).then(async (res) => {
+      if (res.ok) {
+        let data = await res.json();
+        dispatch(
+          setUserData({
+            username: data.username,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            image: data.url,
+          })
+        );
 
-    onSubmitProps.resetForm();
-    // Navigate to Homepage ->
+        onSubmitProps.resetForm();
+        // Navigate to Homepage ->
+      } else {
+        console.log("handleFormSubmit Failed");
+      }
+    });
   };
 
   const handleDrop = (acceptedFile) => {
@@ -88,7 +93,7 @@ function Form() {
         errors, // Form validation errors
       }) => (
         <form onSubmit={handleSubmit}>
-          <img src={picturePath} alt="User" />
+          <img src={image} alt="User" />
           <Dropzone
             acceptedFiles=".jpg, .jpeg, .png"
             multiple={false}
