@@ -42,9 +42,14 @@ const userSlice = createSlice({
     },
     // Removes User Login + JWT Token
     setLogout: (state) => {
-      state.chan_token = null;
       state.email = null;
       state.google_id = null;
+      state.chan_token = null;
+      state.username = null;
+      state.first_name = null;
+      state.last_name = null;
+      state.image = null;
+      state.notes = [];
     },
   },
 });

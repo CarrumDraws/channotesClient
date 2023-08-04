@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../state";
@@ -9,6 +9,7 @@ import Dropzone from "react-dropzone"; // File Upload
 
 function Form() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const chan_token = useSelector((state) => state.chan_token);
   const url = useSelector((state) => state.url);
   const username = useSelector((state) => state.username);
@@ -39,6 +40,7 @@ function Form() {
     for (let value in values) {
       formData.append(value, values[value]);
     }
+    console.log("handleFormSubmit");
     console.log(values);
     formData.append("image", values.image.name);
     fetch(`${url}/users`, {
@@ -48,17 +50,18 @@ function Form() {
     }).then(async (res) => {
       if (res.ok) {
         let data = await res.json();
+        console.log(data);
         dispatch(
           setUserData({
             username: data.username,
             first_name: data.first_name,
             last_name: data.last_name,
-            image: data.url,
+            image: data.image,
           })
         );
 
         onSubmitProps.resetForm();
-        // Navigate to Homepage ->
+        navigate("/home");
       } else {
         console.log("handleFormSubmit Failed");
       }
@@ -69,9 +72,9 @@ function Form() {
     const reader = new FileReader();
     reader.onload = function (e) {
       var image = document.createElement("img"); // result image data
-      // Should display image in ref maybe
+      // Should display image in ref maybe ??
       image.src = e.target.result;
-      document.body.appendChild(image);
+      // document.body.appendChild(image);
     };
     reader.readAsDataURL(acceptedFile);
   };
@@ -143,8 +146,6 @@ function Form() {
             value={values.username}
           />
           <button type="submit">Submit</button>
-          {console.log(errors)}
-          {/* {console.log(values)} */}
         </form>
       )}
     </Formik>
