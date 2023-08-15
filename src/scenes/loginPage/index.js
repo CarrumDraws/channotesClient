@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setToken, setUserData } from "../../state";
 import { useNavigate } from "react-router-dom";
+import { Container } from "@mui/system";
+import { Box, Button, Typography } from "@mui/material";
 
 function Login() {
   const dispatch = useDispatch();
@@ -18,8 +20,11 @@ function Login() {
     });
 
     google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
+      theme: "filled_black",
       size: "large",
+      shape: "pill",
+      type: "standard",
+      text: "signin_with",
     });
     google.accounts.id.prompt();
   }, []);
@@ -112,9 +117,27 @@ function Login() {
   }
 
   return (
-    <div className="App">
-      <div id="signInDiv"></div>
-    </div>
+    <Box
+      sx={{
+        position: "absolute",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <Typography variant="h3">ChanNotes</Typography>
+      <Typography variant="h5">Start Notetaking Today</Typography>
+      <Box
+        sx={{
+          maxWidth: "217.7px",
+        }}
+        id="signInDiv"
+      />
+    </Box>
   );
 }
 

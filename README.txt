@@ -12,7 +12,9 @@ Libraries:
 - yup: Form Validation
 - react-dropzone: File Upload
 
-
+- @mui/material: Material UI
+- @emotion/react: Icons
+- styled-components: DRY's Repetitive CSS
 
 Todo: 
 - Create Form + Route Backend
