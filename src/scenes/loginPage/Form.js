@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../state";
@@ -7,7 +7,15 @@ import { Formik } from "formik"; // Error Handling/Form Validation
 import * as yup from "yup"; // Form Validation
 import Dropzone from "react-dropzone"; // File Upload
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Avatar, TextField, Button, Box } from "@mui/material";
+import {
+  Avatar,
+  Badge,
+  TextField,
+  Typography,
+  Button,
+  Box,
+} from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 function Form() {
   const dispatch = useDispatch();
@@ -17,7 +25,8 @@ function Form() {
   const username = useSelector((state) => state.username);
   const first_name = useSelector((state) => state.first_name);
   const last_name = useSelector((state) => state.last_name);
-  const image = useSelector((state) => state.image);
+  // const image = useSelector((state) => state.image);
+  const [image, setImage] = useState(useSelector((state) => state.image));
 
   // Schemas
   const profileSchema = yup.object().shape({
@@ -73,10 +82,7 @@ function Form() {
   const handleDrop = (acceptedFile) => {
     const reader = new FileReader();
     reader.onload = function (e) {
-      var image = document.createElement("img"); // result image data
-      // Should display image in ref maybe ??
-      image.src = e.target.result;
-      // document.body.appendChild(image);
+      setImage(e.target.result); // result image data
     };
     reader.readAsDataURL(acceptedFile);
   };
@@ -110,11 +116,6 @@ function Form() {
               transform: "translate(-50%, -50%)",
             }}
           >
-            <Avatar
-              alt="Current User"
-              src={image}
-              sx={{ width: 96, height: 96 }}
-            />
             <Dropzone
               acceptedFiles=".jpg, .jpeg, .png"
               multiple={false}
@@ -124,16 +125,24 @@ function Form() {
               }}
             >
               {({ getRootProps, getInputProps }) => (
-                <section>
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    {!values.image.name ? (
-                      <p>Add Picture Here</p>
-                    ) : (
-                      <p>{values.image.name}</p> // If there is a file, display filename
-                    )}
-                  </div>
-                </section>
+                <Box {...getRootProps()} sx={{ padding: "20px" }}>
+                  <input {...getInputProps()} />
+                  <Box sx={{ position: "relative" }}>
+                    <Avatar
+                      alt="Current User"
+                      src={image}
+                      sx={{ width: 96, height: 96 }}
+                    />
+                    <AddCircleIcon
+                      sx={{
+                        position: "absolute",
+                        fontSize: "35px",
+                        left: "105%",
+                        transform: "translate(-100%, -100%)",
+                      }}
+                    />
+                  </Box>
+                </Box>
               )}
             </Dropzone>
 
@@ -148,13 +157,13 @@ function Form() {
                   required
                   fullWidth
                 />
-              </Grid2>{" "}
+              </Grid2>
               <Grid2 xs={6}>
                 <TextField
                   id="first_name"
                   label="First Name"
-                  variant="outlined"
                   onChange={handleChange}
+                  variant="outlined"
                   value={values.first_name}
                   required
                 />

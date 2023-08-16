@@ -17,9 +17,7 @@ Libraries:
 - styled-components: DRY's Repetitive CSS
 
 Todo: 
-- Create Form + Route Backend
-- Figure Out persisting "logged in" state
-- Create single "user" state
+- Figure out h
 - Material UI
 - Formik, Yup
 
@@ -27,12 +25,8 @@ Questions:
 - Should I store userdata in local storage or make an API call each time?
 - How should I deal with data thats been manipulated in local storage?
 
-Things To Search Up:
-- Figure out what other apps store in localstorage + the flow of login data
-- You should probably diagram this stuff out...
-
-Ideas: 
-- Possibly split up redux into multiple slices?
+Backlog: 
+- How does this work if user has no google profile pic image?
 
 Structure:
 Sub-Component: Tiny reusable aspects of the UI

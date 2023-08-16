@@ -4,8 +4,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setToken, setUserData } from "../../state";
 import { useNavigate } from "react-router-dom";
-import { Container } from "@mui/system";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 function Login() {
   const dispatch = useDispatch();
@@ -118,13 +117,14 @@ function Login() {
 
   return (
     <Box
+      gap={2}
       sx={{
         position: "absolute",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
 
-        top: "50%",
+        top: "25%",
         left: "50%",
         transform: "translate(-50%, -50%)",
       }}
