@@ -6,6 +6,8 @@ import { setUserData } from "../../state";
 import { Formik } from "formik"; // Error Handling/Form Validation
 import * as yup from "yup"; // Form Validation
 import Dropzone from "react-dropzone"; // File Upload
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import { Avatar, TextField, Button, Box } from "@mui/material";
 
 function Form() {
   const dispatch = useDispatch();
@@ -96,56 +98,84 @@ function Form() {
         errors, // Form validation errors
       }) => (
         <form onSubmit={handleSubmit}>
-          <img src={image} alt="User" />
-          <Dropzone
-            acceptedFiles=".jpg, .jpeg, .png"
-            multiple={false}
-            onDrop={(acceptedFiles) => {
-              setFieldValue("image", acceptedFiles[0]);
-              handleDrop(acceptedFiles[0]);
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+
+              top: "25%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
             }}
           >
-            {({ getRootProps, getInputProps }) => (
-              <section>
-                <div {...getRootProps()}>
-                  <input {...getInputProps()} />
-                  {!values.image.name ? (
-                    <p>Add Picture Here</p>
-                  ) : (
-                    <p>{values.image.name}</p> // If there is a file, display filename
-                  )}
-                </div>
-              </section>
-            )}
-          </Dropzone>
+            <Avatar
+              alt="Current User"
+              src={image}
+              sx={{ width: 96, height: 96 }}
+            />
+            <Dropzone
+              acceptedFiles=".jpg, .jpeg, .png"
+              multiple={false}
+              onDrop={(acceptedFiles) => {
+                setFieldValue("image", acceptedFiles[0]);
+                handleDrop(acceptedFiles[0]);
+              }}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <section>
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    {!values.image.name ? (
+                      <p>Add Picture Here</p>
+                    ) : (
+                      <p>{values.image.name}</p> // If there is a file, display filename
+                    )}
+                  </div>
+                </section>
+              )}
+            </Dropzone>
 
-          <label htmlFor="first_name">First Name</label>
-          <input
-            id="first_name"
-            name="first_name"
-            type="text"
-            onChange={handleChange}
-            value={values.first_name}
-          />
-
-          <label htmlFor="last_name">Last Name</label>
-          <input
-            id="last_name"
-            name="last_name"
-            type="text"
-            onChange={handleChange}
-            value={values.last_name}
-          />
-
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            name="username"
-            type="text"
-            onChange={handleChange}
-            value={values.username}
-          />
-          <button type="submit">Submit</button>
+            <Grid2 container spacing={2}>
+              <Grid2 xs={12}>
+                <TextField
+                  id="username"
+                  label="User Name"
+                  variant="outlined"
+                  onChange={handleChange}
+                  value={values.username}
+                  required
+                  fullWidth
+                />
+              </Grid2>{" "}
+              <Grid2 xs={6}>
+                <TextField
+                  id="first_name"
+                  label="First Name"
+                  variant="outlined"
+                  onChange={handleChange}
+                  value={values.first_name}
+                  required
+                />
+              </Grid2>
+              <Grid2 xs={6}>
+                <TextField
+                  id="last_name"
+                  label="Last Name"
+                  variant="outlined"
+                  onChange={handleChange}
+                  value={values.last_name}
+                  required
+                />
+              </Grid2>
+              <Grid2 xs={12}>
+                <Button type="submit" variant="contained" fullWidth>
+                  Submit
+                </Button>
+              </Grid2>
+            </Grid2>
+          </Box>
         </form>
       )}
     </Formik>
