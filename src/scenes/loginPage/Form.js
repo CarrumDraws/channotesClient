@@ -1,14 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "../../state";
+import { setUserData, setMode } from "../../state";
 
 import { Formik } from "formik"; // Error Handling/Form Validation
 import * as yup from "yup"; // Form Validation
 import Dropzone from "react-dropzone"; // File Upload
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Avatar, TextField, Typography, Button, Box } from "@mui/material";
+import {
+  Avatar,
+  TextField,
+  Typography,
+  useTheme,
+  Button,
+  Box,
+} from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+
+// NOTE: if needed, we can use the same FORM component for multiple situations.
 
 function Form() {
   const dispatch = useDispatch();
@@ -18,8 +27,9 @@ function Form() {
   const username = useSelector((state) => state.username);
   const first_name = useSelector((state) => state.first_name);
   const last_name = useSelector((state) => state.last_name);
-  // const image = useSelector((state) => state.image);
   const [image, setImage] = useState(useSelector((state) => state.image));
+
+  const { palette, transitions } = useTheme();
 
   // Schemas
   const profileSchema = yup.object().shape({
@@ -28,9 +38,7 @@ function Form() {
     username: yup.string().required("required"),
     image: yup.string().required("required"),
   });
-
-  // NOTE: if needed, we can use the same FORM component for multiple situations.
-
+  // Initial Values
   const initialValuesProfile = {
     first_name: first_name,
     last_name: last_name,
@@ -184,6 +192,17 @@ function Form() {
               <Grid2 xs={12}>
                 <Button type="submit" variant="contained" fullWidth>
                   Submit
+                </Button>
+              </Grid2>
+              <Grid2 xs={12}>
+                <Button
+                  onClick={() => {
+                    dispatch(setMode());
+                  }}
+                  variant="contained"
+                  fullWidth
+                >
+                  Change ColorMode
                 </Button>
               </Grid2>
             </Grid2>

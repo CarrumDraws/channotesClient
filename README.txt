@@ -17,7 +17,12 @@ Libraries:
 - styled-components: DRY's Repetitive CSS
 
 Todo: 
-- 
+- Define Theme + Set Up dark/light mode
+- Upload what you have to servers etc
+- Create yourNotes page w/top Beare
+- Create myProfile page
+- Create myFriends/addFriends page
+- Flesh out design
 
 Questions: 
 - Should I store userdata in local storage or make an API call each time?
