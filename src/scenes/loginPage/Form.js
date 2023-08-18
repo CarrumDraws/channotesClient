@@ -7,14 +7,7 @@ import { Formik } from "formik"; // Error Handling/Form Validation
 import * as yup from "yup"; // Form Validation
 import Dropzone from "react-dropzone"; // File Upload
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import {
-  Avatar,
-  Badge,
-  TextField,
-  Typography,
-  Button,
-  Box,
-} from "@mui/material";
+import { Avatar, TextField, Typography, Button, Box } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 function Form() {
@@ -51,8 +44,6 @@ function Form() {
     for (let value in values) {
       formData.append(value, values[value]);
     }
-    console.log("handleFormSubmit");
-    console.log(values);
     formData.append("image", values.image.name);
     fetch(`${url}/users`, {
       method: "PUT",
@@ -61,7 +52,6 @@ function Form() {
     }).then(async (res) => {
       if (res.ok) {
         let data = await res.json();
-        console.log(data);
         dispatch(
           setUserData({
             username: data.username,
@@ -94,14 +84,14 @@ function Form() {
       validationSchema={profileSchema}
     >
       {({
-        values, // Values of the form
-        setFieldValue, // Sets value of a field(?)
-        touched, // Corresponds to a field thats been touched/visited
-        handleChange, // Change Event Listener. Handles on keystroke.
-        handleBlur, // onBlur event handler. Handles when you click out of input.
+        setFieldValue, // Sets value of a field on command (good for images)
+        handleChange, // Change Event Listener. Alters 'values' object.
+        values, // Map of fields as key-value pairs, where key=name/id and value=value
+        handleBlur, // onBlur Event Listener. Alters 'touched' object.
+        touched, // Map of fields to if theyve been visited
         handleSubmit, // Submit event handler. Passes handleFormSubmit to <form onSubmit>.
+        errors, // Map of fields as key-value pairs, where key=name/id and value=error if theres one
         resetForm, // Resets form (?)
-        errors, // Form validation errors
       }) => (
         <form onSubmit={handleSubmit}>
           <Box
@@ -150,32 +140,45 @@ function Form() {
               <Grid2 xs={12}>
                 <TextField
                   id="username"
+                  name="username"
                   label="User Name"
                   variant="outlined"
                   onChange={handleChange}
                   value={values.username}
-                  required
+                  onBlur={handleBlur}
+                  error={Boolean(touched.username) && Boolean(errors.username)}
+                  helperText={touched.username && errors.username}
                   fullWidth
                 />
               </Grid2>
               <Grid2 xs={6}>
                 <TextField
                   id="first_name"
+                  name="first_name"
                   label="First Name"
-                  onChange={handleChange}
                   variant="outlined"
+                  onChange={handleChange}
                   value={values.first_name}
-                  required
+                  onBlur={handleBlur}
+                  error={
+                    Boolean(touched.first_name) && Boolean(errors.first_name)
+                  }
+                  helperText={touched.first_name && errors.first_name}
                 />
               </Grid2>
               <Grid2 xs={6}>
                 <TextField
                   id="last_name"
+                  name="last_name"
                   label="Last Name"
                   variant="outlined"
                   onChange={handleChange}
                   value={values.last_name}
-                  required
+                  onBlur={handleBlur}
+                  error={
+                    Boolean(touched.last_name) && Boolean(errors.last_name)
+                  }
+                  helperText={touched.last_name && errors.last_name}
                 />
               </Grid2>
               <Grid2 xs={12}>

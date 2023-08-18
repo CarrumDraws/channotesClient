@@ -17,9 +17,7 @@ Libraries:
 - styled-components: DRY's Repetitive CSS
 
 Todo: 
-- Figure out h
-- Material UI
-- Formik, Yup
+- 
 
 Questions: 
 - Should I store userdata in local storage or make an API call each time?
