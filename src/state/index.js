@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 let dev = "http://localhost:5000";
-let prod = "https://carrums-merntut-server.onrender.com";
+let prod = "https://channotes-server.onrender.com";
 
 const initialState = {
   mode: "light", // Dark/Light Mode
