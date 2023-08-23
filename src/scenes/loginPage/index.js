@@ -60,6 +60,7 @@ function Login() {
 
         // 1. Make New User w/ FormData
         // 1a. Fetch the file
+        console.log("User Not Found");
         console.log(userObject);
         fetch(userObject.picture).then(async (res) => {
           if (res.ok) {
@@ -90,7 +91,10 @@ function Login() {
               if (res.ok) {
                 // 2. Set User Data from Google
                 let data = await res.json();
+                console.log("New User Data from Render");
+                console.log(data);
                 dispatch(setToken({ chan_token: data.token }));
+
                 dispatch(
                   setUserData({
                     username: data.user.username,
