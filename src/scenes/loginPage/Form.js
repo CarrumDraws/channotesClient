@@ -60,6 +60,8 @@ function Form() {
     }).then(async (res) => {
       if (res.ok) {
         let data = await res.json();
+        console.log("Form.js Data");
+        console.log(data);
         dispatch(
           setUserData({
             username: data.username,
