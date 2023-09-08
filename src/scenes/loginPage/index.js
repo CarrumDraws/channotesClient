@@ -42,9 +42,11 @@ function Login() {
         headers: { "Content-Type": "application/json" },
       }
     ).then(async (res) => {
+      console.log(res);
       if (res.ok) {
-        // User Found: set User Data + ChanToken from backend, redirect to /home
+        console.log("User Found");
         let data = await res.json();
+        // User Found: set User Data + ChanToken from backend, redirect to /home
         dispatch(setToken({ chan_token: data.token }));
         dispatch(
           setUserData({
@@ -61,12 +63,13 @@ function Login() {
         // 1. Make New User w/ FormData
         // 1a. Fetch the file
         console.log("User Not Found");
-        console.log(userObject);
         fetch(userObject.picture).then(async (res) => {
           if (res.ok) {
             // 1b. Get the Image File from url
             const blob = await res.blob();
-            const file = new File([blob], `${userObject.name}.jpg`, {
+            // (Use Username as image name. )
+            const filename = userObject.name.replace(/\s/g, "");
+            const file = new File([blob], `${filename}.jpg`, {
               type: blob.type,
             });
             let values = {
@@ -91,8 +94,6 @@ function Login() {
               if (res.ok) {
                 // 2. Set User Data from Google
                 let data = await res.json();
-                console.log("New User Data from Render");
-                console.log(data);
                 dispatch(setToken({ chan_token: data.token }));
 
                 dispatch(

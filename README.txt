@@ -42,3 +42,12 @@ loginPage handleCredentialResponse() is a complex function. Based on google "sub
 QUESTIONS: ----------
 
 - Is it safe to store userdata in localStorage? The iuser can modify it at will...
+
+
+if image = url
+    image doesn't need updating
+    Route to usual route
+
+if image = file
+    updateimage
+    Route to new backend route

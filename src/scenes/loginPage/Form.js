@@ -48,35 +48,68 @@ function Form() {
 
   // Send data to Backend + Save to local storage
   const handleFormSubmit = async (values, onSubmitProps) => {
-    const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
-    formData.append("image", values.image.name);
-    fetch(`${url}/users`, {
-      method: "PUT",
-      headers: { Authorization: `Bearer ${chan_token}` },
-      body: formData,
-    }).then(async (res) => {
-      if (res.ok) {
-        let data = await res.json();
-        console.log("Form.js Data");
-        console.log(data);
-        dispatch(
-          setUserData({
-            username: data.username,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            image: data.image,
-          })
-        );
+    console.log("Values");
+    console.log(values);
+    // default values: first_name: 'Calum', last_name: 'Chan', username: 'Carrum', image: 'URL'
+    // altered values: first_name: 'Calum', last_name: 'Chan', username: 'Carrum', image: File {path: 'Dough Nut.png', name: 'Dough Nut.png'}
 
-        onSubmitProps.resetForm();
-        navigate("/home");
-      } else {
-        console.log("handleFormSubmit Failed");
+    let res;
+
+    if (typeof values.image === "string") {
+      console.log("Old Image");
+      res = await fetch(`${url}/users/noimage`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${chan_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: values.first_name,
+          last_name: values.last_name,
+          username: values.username,
+        }),
+      });
+    } else {
+      console.log("New Image");
+      // Rename File by making new file with new name!
+      let newname = values.image.name.replace(/\s/g, "");
+      const newFile = new File([values.image], newname, {
+        type: values.image.type,
+      });
+      let formDataValues = {
+        first_name: values.first_name,
+        last_name: values.last_name,
+        username: values.username,
+        image: newFile,
+      };
+      const formData = new FormData();
+      for (let formDataValue in formDataValues) {
+        formData.append(formDataValue, formDataValues[formDataValue]);
       }
-    });
+      res = await fetch(`${url}/users`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${chan_token}` },
+        body: formData,
+      });
+    }
+
+    if (res.ok) {
+      let data = await res.json();
+      dispatch(
+        setUserData({
+          username: data.username,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          image: data.image,
+        })
+      );
+
+      onSubmitProps.resetForm();
+      navigate("/home");
+    } else {
+      console.log("handleFormSubmit Failed");
+      console.log(res);
+    }
   };
 
   const handleDrop = (acceptedFile) => {
@@ -129,7 +162,7 @@ function Form() {
                   <input {...getInputProps()} />
                   <Box sx={{ position: "relative" }}>
                     <Avatar
-                      alt="Current User"
+                      alt={username}
                       src={image}
                       sx={{ width: 96, height: 96 }}
                     />
@@ -174,6 +207,7 @@ function Form() {
                     Boolean(touched.first_name) && Boolean(errors.first_name)
                   }
                   helperText={touched.first_name && errors.first_name}
+                  fullWidth
                 />
               </Grid2>
               <Grid2 xs={6}>
@@ -189,6 +223,7 @@ function Form() {
                     Boolean(touched.last_name) && Boolean(errors.last_name)
                   }
                   helperText={touched.last_name && errors.last_name}
+                  fullWidth
                 />
               </Grid2>
               <Grid2 xs={12}>
