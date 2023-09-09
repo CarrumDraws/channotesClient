@@ -33,9 +33,9 @@ function Form() {
 
   const { palette, transitions } = useTheme();
 
-  useEffect(() => {
-    RefreshData(dispatch, chan_token, url, chan_id);
-  }, []);
+  // useEffect(() => {
+  //   RefreshData(dispatch, chan_token, url, chan_id);
+  // }, []);
 
   // Schemas
   const profileSchema = yup.object().shape({

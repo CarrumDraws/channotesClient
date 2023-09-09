@@ -11,9 +11,9 @@ function Home() {
   const chan_token = useSelector((state) => state.chan_token);
   const url = useSelector((state) => state.url);
 
-  useEffect(() => {
-    RefreshData(dispatch, chan_token, url, chan_id);
-  }, []);
+  // useEffect(() => {
+  //   RefreshData(dispatch, chan_token, url, chan_id);
+  // }, []);
 
   return (
     <div>

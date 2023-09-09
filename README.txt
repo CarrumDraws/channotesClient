@@ -22,6 +22,8 @@ Todo:
 - Create myProfile page
 - Create myFriends/addFriends page
 - Flesh out design
+- Make a Dev and Prod DB
+- RefreshData isn't working smoothly...
 
 Questions: 
 - Should I store userdata in local storage or make an API call each time?
