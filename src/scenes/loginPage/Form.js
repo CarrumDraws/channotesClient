@@ -101,6 +101,8 @@ function Form() {
 
     if (res.ok) {
       let data = await res.json();
+      console.log("handleFormSubmit Data");
+      console.log(data);
       dispatch(
         setUserData({
           username: data.username,

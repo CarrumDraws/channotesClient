@@ -88,13 +88,12 @@ function Login() {
               first_name: userObject.given_name,
               last_name: userObject.family_name,
               username: userObject.name,
+              image: file,
             };
             const formData = new FormData();
             for (let value in values) {
               formData.append(value, values[value]);
             }
-
-            formData.append("image", file);
 
             // 1c. Create New User
             fetch(`${url}/auth/signup`, {
