@@ -2,7 +2,7 @@ import React from "react";
 import * as jose from "jose";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLogin, setToken, setUserData } from "../../state";
+import { setLogin, setChanData, setUserData } from "../../state";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 
@@ -31,8 +31,16 @@ function Login() {
   // Google Callback Function
   function handleCredentialResponse(response) {
     var userObject = jose.decodeJwt(response.credential);
+
+    console.log(userObject);
     // Set Login Info
-    dispatch(setLogin({ email: userObject.email, google_id: userObject.sub }));
+    dispatch(
+      setLogin({
+        email: userObject.email,
+        google_id: userObject.sub,
+        chan_id: userObject.chan_id,
+      })
+    );
 
     // Call backend with google_id and email
     fetch(
@@ -46,8 +54,11 @@ function Login() {
       if (res.ok) {
         console.log("User Found");
         let data = await res.json();
+        console.log(data);
         // User Found: set User Data + ChanToken from backend, redirect to /home
-        dispatch(setToken({ chan_token: data.token }));
+        dispatch(
+          setChanData({ chan_id: data.user.chan_id, chan_token: data.token })
+        );
         dispatch(
           setUserData({
             username: data.user.username,
@@ -68,8 +79,7 @@ function Login() {
             // 1b. Get the Image File from url
             const blob = await res.blob();
             // (Use Username as image name. )
-            const filename = userObject.name.replace(/\s/g, "");
-            const file = new File([blob], `${filename}.jpg`, {
+            const file = new File([blob], `${userObject.name}.jpg`, {
               type: blob.type,
             });
             let values = {
@@ -94,7 +104,12 @@ function Login() {
               if (res.ok) {
                 // 2. Set User Data from Google
                 let data = await res.json();
-                dispatch(setToken({ chan_token: data.token }));
+                dispatch(
+                  setChanData({
+                    chan_id: data.user.chan_id,
+                    chan_token: data.token,
+                  })
+                );
 
                 dispatch(
                   setUserData({

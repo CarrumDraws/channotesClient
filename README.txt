@@ -17,7 +17,7 @@ Libraries:
 - styled-components: DRY's Repetitive CSS
 
 Todo: 
-- Upload what you have to servers etc
+- Manage Users with No Google Image
 - Create yourNotes page w/top Beare
 - Create myProfile page
 - Create myFriends/addFriends page
@@ -44,10 +44,5 @@ QUESTIONS: ----------
 - Is it safe to store userdata in localStorage? The iuser can modify it at will...
 
 
-if image = url
-    image doesn't need updating
-    Route to usual route
-
-if image = file
-    updateimage
-    Route to new backend route
+Things My App Can Do:
+- Manage image filenames with spaces in them

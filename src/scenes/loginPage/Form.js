@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData, setMode } from "../../state";
+import RefreshData from "../../widgets/RefreshData";
 
 import { Formik } from "formik"; // Error Handling/Form Validation
 import * as yup from "yup"; // Form Validation
@@ -22,6 +23,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 function Form() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const chan_id = useSelector((state) => state.chan_id);
   const chan_token = useSelector((state) => state.chan_token);
   const url = useSelector((state) => state.url);
   const username = useSelector((state) => state.username);
@@ -31,6 +33,10 @@ function Form() {
 
   const { palette, transitions } = useTheme();
 
+  useEffect(() => {
+    RefreshData(dispatch, chan_token, url, chan_id);
+  }, []);
+
   // Schemas
   const profileSchema = yup.object().shape({
     first_name: yup.string().required("required"),
@@ -38,6 +44,7 @@ function Form() {
     username: yup.string().required("required"),
     image: yup.string().required("required"),
   });
+
   // Initial Values
   const initialValuesProfile = {
     first_name: first_name,
@@ -56,7 +63,7 @@ function Form() {
     let res;
 
     if (typeof values.image === "string") {
-      console.log("Old Image");
+      console.log("Image Unchanged");
       res = await fetch(`${url}/users/noimage`, {
         method: "PUT",
         headers: {
@@ -72,8 +79,7 @@ function Form() {
     } else {
       console.log("New Image");
       // Rename File by making new file with new name!
-      let newname = values.image.name.replace(/\s/g, "");
-      const newFile = new File([values.image], newname, {
+      const newFile = new File([values.image], values.image.name, {
         type: values.image.type,
       });
       let formDataValues = {

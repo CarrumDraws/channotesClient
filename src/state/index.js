@@ -8,6 +8,7 @@ const initialState = {
   email: null, // Email, used as Username
   google_id: null, // Google 'sub' value, used as Password
   chan_token: null, // Backend JWTToken, used as ID
+  chan_id: null, // chan_id
   username: null,
   first_name: null,
   last_name: null,
@@ -29,11 +30,12 @@ const userSlice = createSlice({
       state.email = action.payload.email;
       state.google_id = action.payload.google_id;
     },
-    // Set Chan JWT Token
-    setToken: (state, action) => {
+    // Set ChanNotes Data
+    setChanData: (state, action) => {
+      state.chan_id = action.payload.chan_id;
       state.chan_token = action.payload.chan_token;
     },
-    // Set User Data (username, first_name, last_name, image)
+    // Set User Data. Changable Data.
     setUserData: (state, action) => {
       state.username = action.payload.username;
       state.first_name = action.payload.first_name;
@@ -44,6 +46,7 @@ const userSlice = createSlice({
     setLogout: (state) => {
       state.email = null;
       state.google_id = null;
+      state.chan_id = null;
       state.chan_token = null;
       state.username = null;
       state.first_name = null;
@@ -54,6 +57,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setToken, setUserData, setLogout } =
+export const { setMode, setLogin, setChanData, setUserData, setLogout } =
   userSlice.actions; // Used in Components
 export default userSlice.reducer; // Used in Store
