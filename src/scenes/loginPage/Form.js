@@ -55,8 +55,6 @@ function Form() {
 
   // Send data to Backend + Save to local storage
   const handleFormSubmit = async (values, onSubmitProps) => {
-    console.log("Values");
-    console.log(values);
     // default values: first_name: 'Calum', last_name: 'Chan', username: 'Carrum', image: 'URL'
     // altered values: first_name: 'Calum', last_name: 'Chan', username: 'Carrum', image: File {path: 'Dough Nut.png', name: 'Dough Nut.png'}
 

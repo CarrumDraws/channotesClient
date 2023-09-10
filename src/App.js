@@ -33,7 +33,10 @@ function App() {
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <Routes>
-            <Route path="/" element={isAuth ? <Home /> : <Login />} />
+            <Route
+              path="/"
+              element={isAuth ? <Navigate to="/home" /> : <Login />}
+            />
             <Route
               path="/home"
               element={isAuth ? <Home /> : <Navigate to="/" />}

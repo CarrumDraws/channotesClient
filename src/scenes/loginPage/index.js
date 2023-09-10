@@ -32,7 +32,6 @@ function Login() {
   function handleCredentialResponse(response) {
     var userObject = jose.decodeJwt(response.credential);
 
-    console.log(userObject);
     // Set Login Info
     dispatch(
       setLogin({
@@ -50,11 +49,9 @@ function Login() {
         headers: { "Content-Type": "application/json" },
       }
     ).then(async (res) => {
-      console.log(res);
       if (res.ok) {
         console.log("User Found");
         let data = await res.json();
-        console.log(data);
         // User Found: set User Data + ChanToken from backend, redirect to /home
         dispatch(
           setChanData({ chan_id: data.user.chan_id, chan_token: data.token })
