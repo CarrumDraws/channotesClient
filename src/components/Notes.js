@@ -1,14 +1,20 @@
 import React from "react";
-import Note from "./Note";
 import { Container } from "@mui/material";
 // Widget that groups Note objects together.
 // Takes in an object of note data.
 function Notes({ children }) {
+  let padding = "10px";
   return (
     <Container
       // Ampersand Use https://stackoverflow.com/a/69665812
       // '>' means 'direct child'
+      disableGutters={true}
       sx={[
+        {
+          padding: `${padding}`,
+          // inset creates a rounded rectangle.
+          clipPath: `inset(${padding} ${padding} round 20px)`,
+        },
         {
           // "All Direct Children"
           "& > * ": {
@@ -16,15 +22,8 @@ function Notes({ children }) {
           },
         },
         {
-          // "The First Direct Child (Won't affect grandchildren)"
-          "& > :first-of-type": {
-            borderRadius: "22.5px 22.5px 0 0",
-          },
-        },
-        {
           "& > :last-child": {
             marginBottom: "0px",
-            borderRadius: "0 0 22.5px 22.5px ",
           },
         },
       ]}
