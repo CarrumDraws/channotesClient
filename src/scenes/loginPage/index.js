@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setChanData, setUserData } from "../../state";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const url = useSelector((state) => state.url);
+  const { palette, transitions } = useTheme();
   useEffect(() => {
     /* global google */
     google.accounts.id.initialize({
@@ -145,8 +147,8 @@ function Login() {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <Typography variant="h3">ChanNotes</Typography>
-      <Typography variant="h5">Start Notetaking Today</Typography>
+      <Typography variant="large">ChanNotes</Typography>
+      <Typography variant="exSmall">Start Notetaking Today</Typography>
       <Box
         sx={{
           maxWidth: "217.7px",

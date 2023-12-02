@@ -17,20 +17,22 @@ Libraries:
 - styled-components: DRY's Repetitive CSS
 
 Todo: 
-- Manage Users with No Google Image
-- Create yourNotes page w/top Beare
-- Create myProfile page
-- Create myFriends/addFriends page
-- Flesh out design
-- Make a Dev and Prod DB
-- RefreshData isn't working smoothly...
+
+- Main Pages (Mobile and Desktop):
+    - Login
+    - home
+    - myProfile
+    - Search
 
 Questions: 
 - Should I store userdata in local storage or make an API call each time?
 - How should I deal with data thats been manipulated in local storage?
+- How do I test small components within this large project?
 
 Backlog: 
-- How does this work if user has no google profile pic image?
+- Manage note thumbnail pictures
+- Manage Users with No Google Image
+- Add "subtext" property to note objects to display their subtexts.
 
 Structure:
 Sub-Component: Tiny reusable aspects of the UI
@@ -42,9 +44,7 @@ loginPage handleCredentialResponse() is a complex function. Based on google "sub
 
 
 QUESTIONS: ----------
-
-- Is it safe to store userdata in localStorage? The iuser can modify it at will...
-
+- Is it safe to store userdata in localStorage? The user can modify it at will...
 
 Things My App Can Do:
 - Manage image filenames with spaces in them

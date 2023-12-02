@@ -3,6 +3,9 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
+import { ThemeProvider } from "@mui/material";
+import themeSettings from "./theme";
+
 import user from "./state/index.js";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -19,6 +22,13 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
+
+// const theme = createTheme({
+//   palette: {
+//     primary: lime,
+//     secondary: purple,
+//   },
+// });
 
 // Code from https://redux-toolkit.js.org/usage/usage-guide
 const persistConfig = {
@@ -42,7 +52,9 @@ root.render(
   // <React.StrictMode>
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistStore(store)}>
-      <App />
+      <ThemeProvider theme={themeSettings}>
+        <App />
+      </ThemeProvider>
     </PersistGate>
   </Provider>
   // </React.StrictMode>
