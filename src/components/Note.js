@@ -63,7 +63,9 @@ function Note({ data, select, toggleSelected }) {
           textOverflow: "ellipsis",
         }}
       >
-        <Typography variant="med">{title}</Typography>
+        <Typography variant="med" noWrap>
+          {title}
+        </Typography>
         <Typography variant="exSmall" noWrap>
           {cleanDate(date_edited)}{" "}
           {subtitle ? subtitle : "Preview Text Hereeeeeeeeeeeeeeeeeeeeeeeeeee"}
