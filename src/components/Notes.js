@@ -14,6 +14,7 @@ function Notes({ children }) {
           padding: `${padding}`,
           // inset creates a rounded rectangle.
           clipPath: `inset(${padding} ${padding} round 20px)`,
+          overflow: "hidden",
         },
         {
           // "All Direct Children"
