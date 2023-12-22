@@ -3,6 +3,11 @@ import { Box, Typography, useTheme } from "@mui/material";
 import RadioButtonUncheckedOutlinedIcon from "@mui/icons-material/RadioButtonUncheckedOutlined";
 import RadioButtonCheckedOutlinedIcon from "@mui/icons-material/RadioButtonCheckedOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import PushPinIcon from "@mui/icons-material/PushPin";
+import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Checkbox from "@mui/material/Checkbox";
 import Thumbnail from "./Thumbnail.js";
 import cleanDate from "./helperFuncs/cleanDate.js";
@@ -10,7 +15,7 @@ import cleanDate from "./helperFuncs/cleanDate.js";
 function Note({ data, select, toggleSelected }) {
   const { palette, transitions } = useTheme();
   const noteRef = useRef(null);
-  const [mouseDown, setMouseDown] = useState(null);
+  const [dragStart, setDragStart] = useState(null);
   const [pos, setPos] = useState(1); // Position of Note: 0 = Pinned, 1 = default, 2 = Right Menu,
   let {
     id,
@@ -24,12 +29,12 @@ function Note({ data, select, toggleSelected }) {
     locked,
   } = data;
 
-  function mouseUp(x, y) {
-    if (!mouseDown) return;
-    let diff = x - mouseDown.x;
+  function dragEnd(x, y) {
+    if (!dragStart) return;
+    let diff = x - dragStart.x;
     if (diff > 50) setPos(pos === 0 ? 0 : pos - 1);
     else if (diff < 50) setPos(pos === 2 ? 2 : pos + 1);
-    setMouseDown(null);
+    setDragStart(null);
   }
 
   return (
@@ -46,10 +51,23 @@ function Note({ data, select, toggleSelected }) {
         transition: "all 0.5s",
       }}
       onMouseDown={(event) => {
-        setMouseDown({ x: event.clientX, y: event.clientY });
+        setDragStart({ x: event.clientX, y: event.clientY });
       }}
       onMouseUp={(event) => {
-        mouseUp(event.clientX, event.clientY);
+        dragEnd(event.clientX, event.clientY);
+      }}
+      onTouchStart={(event) => {
+        setDragStart({
+          x: event.touches[0].clientX,
+          y: event.touches[0].clientY,
+        });
+        // console.log(event.touches[0].clientX);
+      }}
+      onTouchEnd={(event) => {
+        dragEnd(
+          event.changedTouches[0].clientX,
+          event.changedTouches[0].clientY
+        );
       }}
     >
       <Box
@@ -64,11 +82,36 @@ function Note({ data, select, toggleSelected }) {
       >
         <Box
           sx={{
+            position: "relative",
             height: "100%",
             width: "100%",
             backgroundColor: palette.action.pin,
           }}
-        ></Box>
+        >
+          {pinned ? (
+            <PushPinIcon
+              sx={{
+                position: "absolute",
+                width: "1.5rem",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -40%) rotate(45deg)",
+                color: palette.secondary.text,
+              }}
+            />
+          ) : (
+            <PushPinOutlinedIcon
+              sx={{
+                position: "absolute",
+                width: "1.5rem",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -40%) rotate(45deg)",
+                color: palette.secondary.text,
+              }}
+            />
+          )}
+        </Box>
       </Box>
       <Box
         sx={{
@@ -141,25 +184,61 @@ function Note({ data, select, toggleSelected }) {
       >
         <Box
           sx={{
+            position: "relative",
             height: "100%",
             width: "33%",
             backgroundColor: palette.action.share,
           }}
-        ></Box>
+        >
+          <IosShareIcon
+            sx={{
+              position: "absolute",
+              width: "1.5rem",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -60%)",
+              color: palette.secondary.text,
+            }}
+          />
+        </Box>
         <Box
           sx={{
+            position: "relative",
             height: "100%",
             width: "33%",
             backgroundColor: palette.action.move,
           }}
-        ></Box>
+        >
+          <FolderOutlinedIcon
+            sx={{
+              position: "absolute",
+              width: "1.5rem",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              color: palette.secondary.text,
+            }}
+          />
+        </Box>
         <Box
           sx={{
+            position: "relative",
             height: "100%",
             width: "34%",
             backgroundColor: palette.action.delete,
           }}
-        ></Box>
+        >
+          <DeleteOutlinedIcon
+            sx={{
+              position: "absolute",
+              width: "1.5rem",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              color: palette.secondary.text,
+            }}
+          />
+        </Box>
       </Box>
     </Box>
   );
