@@ -3,6 +3,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import RadioButtonUncheckedOutlinedIcon from "@mui/icons-material/RadioButtonUncheckedOutlined";
 import RadioButtonCheckedOutlinedIcon from "@mui/icons-material/RadioButtonCheckedOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import PersonIcon from "@mui/icons-material/Person";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import IosShareIcon from "@mui/icons-material/IosShare";
@@ -12,11 +13,27 @@ import Checkbox from "@mui/material/Checkbox";
 import Thumbnail from "./Thumbnail.js";
 import cleanDate from "./helperFuncs/cleanDate.js";
 
-function Note({ data, select, toggleSelected }) {
+function Note({
+  data,
+  select,
+  toggleSelected,
+  shared = false,
+  active = false,
+}) {
   const { palette, transitions } = useTheme();
   const noteRef = useRef(null);
-  const [dragStart, setDragStart] = useState(null);
-  const [pos, setPos] = useState(1); // Position of Note: 0 = Pinned, 1 = default, 2 = Right Menu,
+  const [mouseDown, setMouseDown] = useState(false);
+  const [dragStart, setDragStart] = useState({
+    x: 0,
+    y: 0,
+  }); // Mouse Position when Start Dragging
+  const [currDrag, setCurrDrag] = useState({
+    x: 0,
+    y: 0,
+  }); // Mouse Position while Actively Dragging
+  const [dragPos, setDragPos] = useState(0); // X-Position to be dragged. -48 < 144
+  const [prevDragPos, setPrevDragPos] = useState(-48);
+  // const [pos, setPos] = useState(1); // Position of Note: 0 = Pinned, 1 = default, 2 = Right Menu,
   let {
     id,
     chan_id,
@@ -29,13 +46,16 @@ function Note({ data, select, toggleSelected }) {
     locked,
   } = data;
 
-  function dragEnd(x, y) {
-    if (!dragStart) return;
-    let diff = x - dragStart.x;
-    if (diff > 50) setPos(pos === 0 ? 0 : pos - 1);
-    else if (diff < 50) setPos(pos === 2 ? 2 : pos + 1);
-    setDragStart(null);
-  }
+  // Calculates drag distance based off dragStart and currDrag
+  useEffect(() => {
+    let pos = prevDragPos - (dragStart.x - currDrag.x); // Subtract by previous drag value
+    if (0 < pos) pos = 0; // Minimum
+    else if (pos < -192) pos = -192; // Maximum
+    setDragPos(pos);
+  }, [dragStart, currDrag, prevDragPos]);
+
+  // Now: Add Snapping!!
+  function dragEnd(x, y) {}
 
   return (
     <Box
@@ -43,31 +63,55 @@ function Note({ data, select, toggleSelected }) {
       sx={{
         position: "relative",
         display: "flex",
+        userSelect: "none",
         flexDirection: "row",
         height: "3rem",
         width: "calc(100% + 12rem)",
-        left: pos === 0 ? "0rem" : pos === 2 ? "-12rem" : "-3rem",
-        // left: "50px",
-        transition: "all 0.5s",
+        left: `calc(${dragPos}px)`,
+        // transition: "all 0.5s",
       }}
       onMouseDown={(event) => {
+        setMouseDown(true);
         setDragStart({ x: event.clientX, y: event.clientY });
+        setCurrDrag({ x: event.clientX, y: event.clientY });
+      }}
+      onMouseMove={(event) => {
+        if (mouseDown) setCurrDrag({ x: event.clientX, y: event.clientY });
       }}
       onMouseUp={(event) => {
+        setMouseDown(false);
         dragEnd(event.clientX, event.clientY);
+        setPrevDragPos(dragPos);
+        setDragStart({ x: 0, y: 0 });
+        setCurrDrag({ x: 0, y: 0 });
       }}
       onTouchStart={(event) => {
+        setMouseDown(true);
         setDragStart({
           x: event.touches[0].clientX,
           y: event.touches[0].clientY,
         });
-        // console.log(event.touches[0].clientX);
+        setCurrDrag({
+          x: event.touches[0].clientX,
+          y: event.touches[0].clientY,
+        });
+      }}
+      onTouchMove={(event) => {
+        if (mouseDown)
+          setCurrDrag({
+            x: event.touches[0].clientX,
+            y: event.touches[0].clientY,
+          });
       }}
       onTouchEnd={(event) => {
+        setMouseDown(false);
         dragEnd(
           event.changedTouches[0].clientX,
           event.changedTouches[0].clientY
         );
+        setPrevDragPos(dragPos);
+        setDragStart({ x: 0, y: 0 });
+        setCurrDrag({ x: 0, y: 0 });
       }}
     >
       <Box
@@ -120,7 +164,9 @@ function Note({ data, select, toggleSelected }) {
           alignItems: "center",
           height: "100%",
           width: "calc(100% - 12rem)",
-          backgroundColor: palette.tertiary.main,
+          backgroundColor: active
+            ? palette.tertiary.alt
+            : palette.tertiary.main,
         }}
       >
         {select && (
@@ -135,15 +181,26 @@ function Note({ data, select, toggleSelected }) {
             disableRipple={true}
           />
         )}
-        <LockOutlinedIcon
-          sx={{
-            color: palette.tertiary.text,
-            width: "0.75rem",
-            paddingLeft: "0.5rem",
-            paddingRight: "0.5rem",
-            opacity: locked ? "1" : "0",
-          }}
-        />
+        {shared ? (
+          <PersonIcon
+            sx={{
+              color: palette.action.share,
+              width: "0.75rem",
+              paddingLeft: "0.5rem",
+              paddingRight: "0.5rem",
+            }}
+          />
+        ) : (
+          <LockOutlinedIcon
+            sx={{
+              color: palette.action.text,
+              width: "0.75rem",
+              paddingLeft: "0.5rem",
+              paddingRight: "0.5rem",
+              opacity: locked ? "1" : "0",
+            }}
+          />
+        )}
         <Box
           sx={{
             flexGrow: "99",
