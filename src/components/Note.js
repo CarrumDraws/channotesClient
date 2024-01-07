@@ -23,16 +23,10 @@ function Note({
   const { palette, transitions } = useTheme();
   const noteRef = useRef(null);
   const [mouseDown, setMouseDown] = useState(false);
-  const [dragStart, setDragStart] = useState({
-    x: 0,
-    y: 0,
-  }); // Mouse Position when Start Dragging
-  const [currDrag, setCurrDrag] = useState({
-    x: 0,
-    y: 0,
-  }); // Mouse Position while Actively Dragging
-  const [dragPos, setDragPos] = useState(0); // X-Position to be dragged. -48 < 144
-  const [prevDragPos, setPrevDragPos] = useState(-48);
+  const [dragStart, setDragStart] = useState(0); // Mouse X-Position when Start Dragging
+  const [currDrag, setCurrDrag] = useState(0); // Mouse X-Position while Dragging
+  const [xPos, setXPos] = useState(0); // Final X-Position. Ranges from 0 - -192 (48 * 4)
+  const [prevXPos, setPrevXPos] = useState(-48); // X-Position of prev drag
   // const [pos, setPos] = useState(1); // Position of Note: 0 = Pinned, 1 = default, 2 = Right Menu,
   let {
     id,
@@ -48,14 +42,14 @@ function Note({
 
   // Calculates drag distance based off dragStart and currDrag
   useEffect(() => {
-    let pos = prevDragPos - (dragStart.x - currDrag.x); // Subtract by previous drag value
+    let pos = prevXPos - (dragStart - currDrag); // Subtract by previous drag value
     if (0 < pos) pos = 0; // Minimum
     else if (pos < -192) pos = -192; // Maximum
-    setDragPos(pos);
-  }, [dragStart, currDrag, prevDragPos]);
+    setXPos(pos);
+  }, [dragStart, currDrag, prevXPos]);
 
   // Now: Add Snapping!!
-  function dragEnd(x, y) {}
+  function dragEnd(x) {}
 
   return (
     <Box
@@ -67,51 +61,40 @@ function Note({
         flexDirection: "row",
         height: "3rem",
         width: "calc(100% + 12rem)",
-        left: `calc(${dragPos}px)`,
+        left: `calc(${xPos}px)`,
         // transition: "all 0.5s",
       }}
       onMouseDown={(event) => {
         setMouseDown(true);
-        setDragStart({ x: event.clientX, y: event.clientY });
-        setCurrDrag({ x: event.clientX, y: event.clientY });
+        setDragStart(event.clientX);
+        setCurrDrag(event.clientX);
       }}
       onMouseMove={(event) => {
-        if (mouseDown) setCurrDrag({ x: event.clientX, y: event.clientY });
+        if (mouseDown) setCurrDrag(event.clientX);
       }}
       onMouseUp={(event) => {
         setMouseDown(false);
-        dragEnd(event.clientX, event.clientY);
-        setPrevDragPos(dragPos);
-        setDragStart({ x: 0, y: 0 });
-        setCurrDrag({ x: 0, y: 0 });
+        dragEnd(event.clientX);
+        // Reset Drag Positions
+        setPrevXPos(xPos);
+        setDragStart(0);
+        setCurrDrag(0);
       }}
       onTouchStart={(event) => {
         setMouseDown(true);
-        setDragStart({
-          x: event.touches[0].clientX,
-          y: event.touches[0].clientY,
-        });
-        setCurrDrag({
-          x: event.touches[0].clientX,
-          y: event.touches[0].clientY,
-        });
+        setDragStart(event.touches[0].clientX);
+        setCurrDrag(event.touches[0].clientX);
       }}
       onTouchMove={(event) => {
-        if (mouseDown)
-          setCurrDrag({
-            x: event.touches[0].clientX,
-            y: event.touches[0].clientY,
-          });
+        if (mouseDown) setCurrDrag(event.touches[0].clientX);
       }}
       onTouchEnd={(event) => {
         setMouseDown(false);
-        dragEnd(
-          event.changedTouches[0].clientX,
-          event.changedTouches[0].clientY
-        );
-        setPrevDragPos(dragPos);
-        setDragStart({ x: 0, y: 0 });
-        setCurrDrag({ x: 0, y: 0 });
+        dragEnd(event.changedTouches[0].clientX);
+        // Reset Drag Positions
+        setPrevXPos(xPos);
+        setDragStart(0);
+        setCurrDrag(0);
       }}
     >
       <Box
