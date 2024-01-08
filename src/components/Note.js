@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
+import gsap from "gsap";
 import RadioButtonUncheckedOutlinedIcon from "@mui/icons-material/RadioButtonUncheckedOutlined";
 import RadioButtonCheckedOutlinedIcon from "@mui/icons-material/RadioButtonCheckedOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -27,7 +28,7 @@ function Note({
   const [currDrag, setCurrDrag] = useState(0); // Mouse X-Position while Dragging
   const [xPos, setXPos] = useState(0); // Final X-Position. Ranges from 0 - -192 (48 * 4)
   const [prevXPos, setPrevXPos] = useState(-48); // X-Position of prev drag
-  // const [pos, setPos] = useState(1); // Position of Note: 0 = Pinned, 1 = default, 2 = Right Menu,
+
   let {
     id,
     chan_id,
@@ -48,8 +49,40 @@ function Note({
     setXPos(pos);
   }, [dragStart, currDrag, prevXPos]);
 
-  // Now: Add Snapping!!
-  function dragEnd(x) {}
+  // Position Snapping w/ GSAP
+  function dragEnd(x) {
+    const myPosObj = { x: xPos };
+    if (xPos > -24)
+      gsap.to(myPosObj, {
+        x: 0,
+        duration: 0.75,
+        ease: "power3.out",
+        onUpdate: () => {
+          setXPos(myPosObj.x);
+          setPrevXPos(myPosObj.x);
+        },
+      });
+    else if (xPos < -120)
+      gsap.to(myPosObj, {
+        x: -192,
+        duration: 0.75,
+        ease: "power3.out",
+        onUpdate: () => {
+          setXPos(myPosObj.x);
+          setPrevXPos(myPosObj.x);
+        },
+      });
+    else
+      gsap.to(myPosObj, {
+        x: -48,
+        duration: 0.75,
+        ease: "elastic.out(1,0.5)",
+        onUpdate: () => {
+          setXPos(myPosObj.x);
+          setPrevXPos(myPosObj.x);
+        },
+      });
+  }
 
   return (
     <Box
@@ -62,7 +95,6 @@ function Note({
         height: "3rem",
         width: "calc(100% + 12rem)",
         left: `calc(${xPos}px)`,
-        // transition: "all 0.5s",
       }}
       onMouseDown={(event) => {
         setMouseDown(true);
