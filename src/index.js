@@ -23,13 +23,6 @@ import {
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 
-// const theme = createTheme({
-//   palette: {
-//     primary: lime,
-//     secondary: purple,
-//   },
-// });
-
 // Code from https://redux-toolkit.js.org/usage/usage-guide
 const persistConfig = {
   key: "root",

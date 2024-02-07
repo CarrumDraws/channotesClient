@@ -11,8 +11,8 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Checkbox from "@mui/material/Checkbox";
-import Thumbnail from "./Thumbnail.js";
-import cleanDate from "./helperFuncs/cleanDate.js";
+import Thumbnail from "../subcomponents/Thumbnail.js";
+import cleanDate from "../helperFuncs/cleanDate.js";
 
 function Note({
   data,
@@ -242,7 +242,13 @@ function Note({
             paddingRight: "0.5rem",
           }}
         >
-          <Thumbnail type="m" />
+          <Thumbnail
+            sx={{
+              paddingLeft: "0.5rem",
+              paddingRight: "0.5rem",
+            }}
+            type="m"
+          />
         </Box>
       </Box>
       <Box

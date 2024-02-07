@@ -16,6 +16,8 @@ Libraries:
 - @emotion/react: Icons
 - styled-components: DRY's Repetitive CSS
 
+- gsap: Animation
+
 Todo: 
 
 - Main Pages (Mobile and Desktop):
@@ -28,6 +30,7 @@ Questions:
 - Should I store userdata in local storage or make an API call each time?
 - How should I deal with data thats been manipulated in local storage?
 - How do I test small components within this large project?
+- For GSAP, Do I have to do anything on component unmount??
 
 Backlog: 
 - Manage note thumbnail pictures
