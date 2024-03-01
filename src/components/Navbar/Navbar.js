@@ -38,11 +38,12 @@ function Navbar() {
           } 100%)`,
         }}
       />
+      {/* Background color */}
       <Box
         position="absolute"
         height="80%"
         width="100%"
-        backgroundColor={palette.primary.main}
+        backgroundColor={palette.primary.text}
       />
       <Box display="flex" position="absolute" height="80%" width="100%">
         <Button pageType="home" currPage={page} />

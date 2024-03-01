@@ -29,15 +29,31 @@ function Button({ pageType, currPage, disabled, image, name }) {
 
   return (
     <>
-      <Box
-        height="100%"
-        flexGrow="1"
-        sx={{
-          backgroundColor: palette.primary.text,
-          transition: checkPage() ? "0.2s linear 0.1s" : "0.2s linear 0s",
-          borderRadius: checkPage() ? "0% 50% 0% 0% " : "0% 0% 0% 0%",
-        }}
-      />
+      <Box position="relative" height="100%" flexGrow="1">
+        {/* Yellow Bkrd to prevent hairline cracks*/}
+        <Box
+          position="absolute"
+          width="calc(100% + 4rem)"
+          top="0%"
+          left="50%"
+          sx={{
+            backgroundColor: palette.primary.main,
+            transition: checkPage() ? "0.2s linear " : "0.2s linear ",
+            height: checkPage() ? "50%" : "0%",
+          }}
+        />
+        <Box
+          position="relative"
+          height="100%"
+          width="100%"
+          sx={{
+            backgroundColor: palette.primary.text,
+            transition: checkPage() ? "0.2s linear 0.1s" : "0.2s linear 0s",
+            borderRadius: checkPage() ? "0% 2rem 0% 0% " : "0% 0rem 0% 0%",
+          }}
+        />
+      </Box>
+
       <Box position="relative" height="100%" width="4rem">
         {pageType === "home" && (
           <SvgIcon position="absolute" sx={buttonStyle}>
@@ -96,46 +112,36 @@ function Button({ pageType, currPage, disabled, image, name }) {
             />
           </Box>
         )}
-
         <svg position="relative" height="100%" width="4rem">
-          <mask id={pageType + "abcd"}>
-            {/* White = Visible, Black = Invisible */}
-            <rect width="100%" height="100%" fill="white" />
-            <rect
-              width="100%"
-              height="100%"
-              style={{
-                transition: "all .3s cubic-bezier(0.68, -0.6, 0.32, 1.6)",
-              }}
-              y={checkPage() ? "-50%" : "-150%"}
-              fill="black"
-            />
-            <circle
-              r="50%"
-              cx="50%"
-              style={{
-                transition: "all .3s cubic-bezier(0.68, -0.6, 0.32, 1.6)",
-              }}
-              cy={checkPage() ? "50%" : "-50%"}
-              fill="black"
-            />
-          </mask>
+          <circle
+            r="50%"
+            cx="50%"
+            style={{
+              transition: "all .3s cubic-bezier(0.68, -0.6, 0.32, 1.6)",
+            }}
+            cy={checkPage() ? "50%" : "-50%"}
+            fill={palette.primary.main}
+          />
           <rect
-            fill={palette.primary.text}
             width="100%"
             height="100%"
-            mask={`url(#${pageType + "abcd"})`}
+            style={{
+              transition: "all .3s cubic-bezier(0.68, -0.6, 0.32, 1.6)",
+            }}
+            y={checkPage() ? "-50%" : "-150%"}
+            fill={palette.primary.main}
           />
         </svg>
       </Box>
 
       <Box
+        position="relative"
         height="100%"
         flexGrow="1"
         sx={{
           backgroundColor: palette.primary.text,
           transition: checkPage() ? "0.2s linear 0.1s" : "0.2s linear 0s",
-          borderRadius: checkPage() ? "50% 0% 0% 0% " : "0% 0% 0% 0%",
+          borderRadius: checkPage() ? "2rem 0% 0% 0% " : "0rem 0% 0% 0%",
         }}
       />
     </>
