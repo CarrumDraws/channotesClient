@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.11.1",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.4",
+    "@mui/system": "^5.15.11",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -21,7 +23,6 @@
     "react-scripts": "5.0.1",
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
-    "styled-components": "^6.0.7",
     "web-vitals": "^2.1.4",
     "yup": "^1.2.0"
   },

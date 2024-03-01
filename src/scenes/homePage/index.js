@@ -9,12 +9,14 @@ import GroupNF from "../../components/NotesFriends/Group";
 import GroupFM from "../../components/FoldersMenus/Group";
 import Friend from "../../components/NotesFriends/Friend";
 import Folder from "../../components/FoldersMenus/Folder";
+import Navbar from "../../components/Navbar/Navbar";
 
 function Home() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [selectedNotes, setSelectedNotes] = React.useState(() => new Set()); // Stores ID's of selected notes
   const [select, setSelect] = useState(false); // The "Selecting" state for Notes and Folders
+  const [page, setPage] = useState("home");
 
   // Adds/removes noteId from noteData
   function toggleSelected(noteId) {
@@ -143,7 +145,7 @@ function Home() {
     },
   ];
   return (
-    <div>
+    <Box>
       <button onClick={() => dispatch(setLogout())}>Sign Out</button>
       <button onClick={() => navigate("/editprofile")}>Edit Profile</button>
       <button onClick={() => setSelect(!select)}>
@@ -168,14 +170,13 @@ function Home() {
         })}
       </GroupNF>
 
-      {/* Maybe have a recursive function that groups the folders into one another? */}
-      {/* just pass the folders  */}
       <GroupFM>
         {myFolders[0].folders.map((data) => {
           return <Folder data={data} select={select} key={data.id} />;
         })}
       </GroupFM>
-    </div>
+      <Navbar page={page} />
+    </Box>
   );
 }
 

@@ -14,7 +14,6 @@ Libraries:
 
 - @mui/material: Material UI
 - @emotion/react: Icons
-- styled-components: DRY's Repetitive CSS
 
 - gsap: Animation
 

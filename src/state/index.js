@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import isMobile from "../components/helperFuncs/isMobile";
 let dev = "http://localhost:5000";
 let prod = "https://channotes-server.onrender.com";
 
@@ -15,6 +15,7 @@ const initialState = {
   image: null, // URL of current profile pic
   notes: [],
   url: process.env.NODE_ENV === "development" ? dev : prod, // Switches URL based on environment type
+  mobile: isMobile(),
 };
 
 const userSlice = createSlice({
