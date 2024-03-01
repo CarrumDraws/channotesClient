@@ -33,12 +33,12 @@ function Button({ pageType, currPage, disabled, image, name }) {
         {/* Yellow Bkrd to prevent hairline cracks*/}
         <Box
           position="absolute"
-          width="calc(100% + 4rem)"
+          width="calc(180% + 4rem)"
           top="0%"
-          left="50%"
+          left="10%"
           sx={{
             backgroundColor: palette.primary.main,
-            transition: checkPage() ? "0.2s linear " : "0.2s linear ",
+            transition: checkPage() ? "0.3s linear " : "0.3s linear ",
             height: checkPage() ? "50%" : "0%",
           }}
         />
@@ -48,7 +48,7 @@ function Button({ pageType, currPage, disabled, image, name }) {
           width="100%"
           sx={{
             backgroundColor: palette.primary.text,
-            transition: checkPage() ? "0.2s linear 0.1s" : "0.2s linear 0s",
+            transition: checkPage() ? "0.3s linear 0.1s" : "0.3s linear 0s",
             borderRadius: checkPage() ? "0% 2rem 0% 0% " : "0% 0rem 0% 0%",
           }}
         />
@@ -140,7 +140,7 @@ function Button({ pageType, currPage, disabled, image, name }) {
         flexGrow="1"
         sx={{
           backgroundColor: palette.primary.text,
-          transition: checkPage() ? "0.2s linear 0.1s" : "0.2s linear 0s",
+          transition: checkPage() ? "0.3s linear 0.1s" : "0.3s linear 0s",
           borderRadius: checkPage() ? "2rem 0% 0% 0% " : "0rem 0% 0% 0%",
         }}
       />
