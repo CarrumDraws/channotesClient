@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, SvgIcon } from "@mui/material";
 import ProfPic from "../subcomponents/ProfPic";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import SearchIcon from "@mui/icons-material/Search";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import { ReactComponent as HomeIcon } from "../../icons/Home.svg";
+import { ReactComponent as AlertsIcon } from "../../icons/Alerts.svg";
+import { ReactComponent as SearchIcon } from "../../icons/Search.svg";
 
-function Button({ pageType, currPage, image, name }) {
+function Button({ pageType, currPage, disabled, image, name }) {
   const { palette, transitions } = useTheme();
   function checkPage() {
     // page can be home, search, alerts, profile
@@ -14,14 +14,19 @@ function Button({ pageType, currPage, image, name }) {
   }
   let buttonStyle = {
     position: "absolute",
-    height: "2.5rem",
+    height: "2rem",
     width: "auto",
     top: "45%",
     left: "50%",
     transform: "translate(-50%, -40%)",
     transition: "0.2s",
-    color: checkPage() ? palette.primary.text : palette.primary.main,
   };
+  let color = disabled
+    ? palette.secondary.alt
+    : checkPage()
+    ? palette.primary.text
+    : palette.primary.main;
+
   return (
     <>
       <Box
@@ -35,23 +40,32 @@ function Button({ pageType, currPage, image, name }) {
       />
       <Box position="relative" height="100%" width="4rem">
         {pageType === "home" && (
-          <HomeOutlinedIcon
-            position="absolute"
-            sx={buttonStyle}
-            style={{
-              top: "45%",
-              height: "2.75rem",
-            }}
-          />
+          <SvgIcon position="absolute" sx={buttonStyle}>
+            <HomeIcon fill={color} stroke={color} />
+          </SvgIcon>
         )}
         {pageType === "search" && (
-          <NotificationsNoneIcon position="absolute" sx={buttonStyle} />
+          <SvgIcon position="absolute" sx={buttonStyle}>
+            <SearchIcon fill={color} stroke={color} />
+          </SvgIcon>
         )}
         {pageType === "alerts" && (
-          <SearchIcon position="absolute" sx={buttonStyle} />
+          <SvgIcon position="absolute" sx={buttonStyle}>
+            <AlertsIcon fill={color} stroke={color} />
+          </SvgIcon>
         )}
         {pageType === "profile" && (
           <Box sx={buttonStyle}>
+            <Box
+              position="absolute"
+              sx={buttonStyle}
+              style={{
+                width: `2.5rem`,
+                height: `2.5rem`,
+                borderRadius: `50%`,
+                backgroundColor: color,
+              }}
+            />
             <ProfPic
               position="absolute"
               url={image}

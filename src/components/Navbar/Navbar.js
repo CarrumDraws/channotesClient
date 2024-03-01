@@ -46,7 +46,7 @@ function Navbar() {
       <Box display="flex" position="absolute" height="80%" width="100%">
         <Button pageType="home" currPage={page} />
         <Button pageType="search" currPage={page} />
-        <Button pageType="alerts" currPage={page} />
+        <Button pageType="alerts" currPage={page} disabled />
         <Button
           pageType="profile"
           currPage={page}
