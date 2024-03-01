@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Box, Typography, useTheme, SvgIcon } from "@mui/material";
-import ProfPic from "../subcomponents/ProfPic";
 import { ReactComponent as HomeIcon } from "../../icons/Home.svg";
 import { ReactComponent as AlertsIcon } from "../../icons/Alerts.svg";
 import { ReactComponent as SearchIcon } from "../../icons/Search.svg";
+import ProfPic from "../subcomponents/ProfPic";
 
 function Button({ pageType, currPage, disabled, image, name }) {
   const { palette, transitions } = useTheme();
@@ -16,7 +16,7 @@ function Button({ pageType, currPage, disabled, image, name }) {
     position: "absolute",
     height: "2rem",
     width: "auto",
-    top: "45%",
+    top: checkPage() ? "35%" : "45%",
     left: "50%",
     transform: "translate(-50%, -40%)",
     transition: "0.2s",
@@ -34,24 +34,45 @@ function Button({ pageType, currPage, disabled, image, name }) {
         flexGrow="1"
         sx={{
           backgroundColor: palette.primary.text,
-          transition: "0.2s ease-out",
+          transition: checkPage() ? "0.2s linear 0.1s" : "0.2s linear 0s",
           borderRadius: checkPage() ? "0% 50% 0% 0% " : "0% 0% 0% 0%",
         }}
       />
       <Box position="relative" height="100%" width="4rem">
         {pageType === "home" && (
           <SvgIcon position="absolute" sx={buttonStyle}>
-            <HomeIcon fill={color} stroke={color} />
+            <HomeIcon
+              fill={color}
+              stroke={color}
+              strokeWidth={checkPage() ? "3" : "2"}
+              style={{
+                transition: "all .3s linear",
+              }}
+            />
           </SvgIcon>
         )}
         {pageType === "search" && (
           <SvgIcon position="absolute" sx={buttonStyle}>
-            <SearchIcon fill={color} stroke={color} />
+            <SearchIcon
+              fill={color}
+              stroke={color}
+              strokeWidth={checkPage() ? "3" : "2"}
+              style={{
+                transition: "all .3s linear",
+              }}
+            />
           </SvgIcon>
         )}
         {pageType === "alerts" && (
           <SvgIcon position="absolute" sx={buttonStyle}>
-            <AlertsIcon fill={color} stroke={color} />
+            <AlertsIcon
+              fill={color}
+              stroke={color}
+              strokeWidth={checkPage() ? "3" : "2"}
+              style={{
+                transition: "all .3s linear",
+              }}
+            />
           </SvgIcon>
         )}
         {pageType === "profile" && (
@@ -60,8 +81,9 @@ function Button({ pageType, currPage, disabled, image, name }) {
               position="absolute"
               sx={buttonStyle}
               style={{
-                width: `2.5rem`,
-                height: `2.5rem`,
+                width: checkPage() ? `2.75rem` : `2.5rem`,
+                height: checkPage() ? `2.75rem` : `2.5rem`,
+                top: checkPage() ? "40%" : "45%",
                 borderRadius: `50%`,
                 backgroundColor: color,
               }}
@@ -81,15 +103,19 @@ function Button({ pageType, currPage, disabled, image, name }) {
             <rect width="100%" height="100%" fill="white" />
             <rect
               width="100%"
-              height="50%"
-              style={{ transition: "all .3s ease-out" }}
-              y={checkPage() ? "0%" : "-100%"}
+              height="100%"
+              style={{
+                transition: "all .3s cubic-bezier(0.68, -0.6, 0.32, 1.6)",
+              }}
+              y={checkPage() ? "-50%" : "-150%"}
               fill="black"
             />
             <circle
               r="50%"
               cx="50%"
-              style={{ transition: "all .3s ease-out" }}
+              style={{
+                transition: "all .3s cubic-bezier(0.68, -0.6, 0.32, 1.6)",
+              }}
               cy={checkPage() ? "50%" : "-50%"}
               fill="black"
             />
@@ -108,7 +134,7 @@ function Button({ pageType, currPage, disabled, image, name }) {
         flexGrow="1"
         sx={{
           backgroundColor: palette.primary.text,
-          transition: "0.2s ease-out",
+          transition: checkPage() ? "0.2s linear 0.1s" : "0.2s linear 0s",
           borderRadius: checkPage() ? "50% 0% 0% 0% " : "0% 0% 0% 0%",
         }}
       />

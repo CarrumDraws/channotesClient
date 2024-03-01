@@ -13,8 +13,9 @@ function Navbar() {
   const firstName = useSelector((state) => state.first_name);
   function toggle() {
     // Trigger active page
-    setConut((count + 1) % 4);
-    setPage(pages[count]);
+    let newCount = (count + 1) % 4;
+    setConut(newCount);
+    setPage(pages[newCount]);
   }
 
   return (
