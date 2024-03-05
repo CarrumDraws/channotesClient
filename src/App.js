@@ -3,9 +3,13 @@ import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { Box, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 
-import Home from "./scenes/homePage";
-import Login from "./scenes/loginPage";
-import Form from "./scenes/loginPage/Form";
+import Home from "./scenes/home";
+import Login from "./scenes/login";
+import Form from "./scenes/login/Form";
+import Search from "./scenes/search";
+import User from "./scenes/user";
+import Error from "./scenes/error";
+import Test from "./scenes/test";
 
 function App() {
   const isAuth = Boolean(useSelector((state) => state.chan_token));
@@ -25,16 +29,30 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={isAuth ? <Navigate to="/home" /> : <Login />}
+            element={isAuth ? <Home /> : <Navigate to="/login" />}
           />
           <Route
-            path="/home"
-            element={isAuth ? <Home /> : <Navigate to="/" />}
+            path="folders"
+            element={isAuth ? <Home /> : <Navigate to="/login" />}
           />
           <Route
-            path="/editprofile"
-            element={isAuth ? <Form /> : <Navigate to="/" />}
+            path="login"
+            element={isAuth ? <Navigate to="/" /> : <Login />}
           />
+          <Route
+            path="editprofile"
+            element={isAuth ? <Form /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="search"
+            element={isAuth ? <Search /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="user/:chan_id"
+            element={isAuth ? <User /> : <Navigate to="/login" />}
+          />
+          <Route path="test" element={<Test />} />
+          <Route path="*" element={<Error />} />
         </Routes>
       </BrowserRouter>
     </Box>

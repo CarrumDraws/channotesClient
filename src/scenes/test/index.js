@@ -11,7 +11,7 @@ import Friend from "../../components/NotesFriends/Friend";
 import Folder from "../../components/FoldersMenus/Folder";
 import Navbar from "../../components/Navbar/Navbar";
 
-function Home() {
+function Test() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [selectedNotes, setSelectedNotes] = React.useState(() => new Set()); // Stores ID's of selected notes
@@ -180,4 +180,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Test;
