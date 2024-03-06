@@ -11,6 +11,9 @@ import User from "./scenes/user";
 import Error from "./scenes/error";
 import Test from "./scenes/test";
 
+import Topbar from "./components/Topbar/Topbar";
+import Navbar from "./components/Navbar/Navbar";
+
 function App() {
   const isAuth = Boolean(useSelector((state) => state.chan_token));
 
@@ -26,6 +29,8 @@ function App() {
       }}
     >
       <BrowserRouter>
+        <Topbar />
+        <Navbar />
         <Routes>
           <Route
             path="/"

@@ -175,7 +175,7 @@ function Test() {
           return <Folder data={data} select={select} key={data.id} />;
         })}
       </GroupFM>
-      <Navbar page={page} />
+      <Navbar />
     </Box>
   );
 }
