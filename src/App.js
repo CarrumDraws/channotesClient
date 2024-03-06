@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { Box, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 
-import Home from "./scenes/home";
+import Folder from "./scenes/folder";
 import Login from "./scenes/login";
 import Form from "./scenes/login/Form";
 import Search from "./scenes/search";
@@ -34,11 +34,11 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={isAuth ? <Home /> : <Navigate to="/login" />}
+            element={isAuth ? <Folder /> : <Navigate to="/login" />}
           />
           <Route
-            path="folders"
-            element={isAuth ? <Home /> : <Navigate to="/login" />}
+            path="folders/:folder_id"
+            element={isAuth ? <Folder /> : <Navigate to="/login" />}
           />
           <Route
             path="login"
