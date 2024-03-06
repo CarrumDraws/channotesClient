@@ -3,7 +3,6 @@ import { Container } from "@mui/material";
 // Widget that groups Note objects together.
 // Takes in an object of note data.
 function Group({ children }) {
-  let padding = "10px";
   return (
     <Container
       // Ampersand Use https://stackoverflow.com/a/69665812
@@ -11,8 +10,7 @@ function Group({ children }) {
       disableGutters={true} // Disbales default padding
       sx={[
         {
-          padding: `${padding}`,
-          clipPath: `inset(${padding} ${padding} round 17.5px)`,
+          clipPath: `inset(0 0 round 17.5px)`,
           // inset creates a rounded rectangle.
           overflow: "hidden",
         },
