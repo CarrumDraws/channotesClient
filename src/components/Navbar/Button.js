@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Box, Typography, useTheme, SvgIcon } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { ReactComponent as HomeIcon } from "../../icons/Home.svg";
 import { ReactComponent as AlertsIcon } from "../../icons/Alerts.svg";
 import { ReactComponent as SearchIcon } from "../../icons/Search.svg";
 import ProfPic from "../subcomponents/ProfPic";
-
-function Button({ pageType, currPage, disabled, image, name }) {
+function Button({ pageType, currPage, setPage, userData = {}, disabled }) {
   const { palette, transitions } = useTheme();
+  const navigate = useNavigate();
+  const { image, name, chanid } = userData;
   function checkPage() {
     // page can be home, search, alerts, profile
     // Checks if URL matches the pageType
@@ -53,8 +55,28 @@ function Button({ pageType, currPage, disabled, image, name }) {
           }}
         />
       </Box>
-
-      <Box position="relative" height="100%" width="4rem">
+      <Box
+        position="relative"
+        height="100%"
+        width="4rem"
+        onClick={() => {
+          if (disabled) return;
+          setPage(pageType);
+          switch (pageType) {
+            case "search":
+              navigate("/search");
+              break;
+            case "profile":
+              navigate(`/user/${chanid}`);
+              break;
+            case "alerts":
+              navigate("/alerts");
+              break;
+            default:
+              navigate("/");
+          }
+        }}
+      >
         {pageType === "home" && (
           <SvgIcon position="absolute" sx={buttonStyle}>
             <HomeIcon

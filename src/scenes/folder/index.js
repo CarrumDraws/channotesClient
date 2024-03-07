@@ -1,35 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { Box, Typography, useTheme } from "@mui/material";
 
 import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
 import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
 import SearchBar from "../../components/SearchBar.js/SearchBar";
 
-import Group from "../../components/FoldersMenus/Group";
+import GroupNF from "../../components/NotesFriends/Group";
+import GroupFM from "../../components/FoldersMenus/Group";
 import Folder from "../../components/FoldersMenus/Folder";
+import Note from "../../components/NotesFriends/Note";
 
 import { GetFolder } from "../../api/folders/FolderCalls";
+import { GetNotes } from "../../api/notes/NoteCalls";
 
 function FolderPage() {
-  let [folders, setFolders] = useState({
-    title: null,
-    chan_id: null,
-    date_created: null,
-    folder_id: null,
-    folders: [],
-    id: null,
-    notes: 0,
-  });
-  const [select, setSelect] = useState(false); // "Selecting" state
   const { palette, transitions } = useTheme();
+  const navigate = useNavigate();
+
   const chan_token = useSelector((state) => state.chan_token);
   const url = useSelector((state) => state.url);
-  let { folder_id } = useParams();
 
-  // Get Folder
+  const [folders, setFolders] = useState(null);
+  const [notes, setNotes] = useState(null);
+  const [select, setSelect] = useState(false); // "Selecting" state
+
+  let { folder_id } = useParams(); // If empty, home folder!
+
+  // Get Data
   useEffect(() => {
+    // Get Folder
     async function getFolderData() {
       try {
         const res = await GetFolder({
@@ -40,9 +41,25 @@ function FolderPage() {
         setFolders(res);
       } catch (error) {
         console.log(error.message);
+        navigate("/error");
       }
     }
     getFolderData();
+    // Get Notes
+    async function GetNoteData() {
+      try {
+        const res = await GetNotes({
+          url: url,
+          chan_token: chan_token,
+          folder_id: folder_id,
+        });
+        setNotes(res);
+      } catch (error) {
+        console.log(error.message);
+        navigate("/error");
+      }
+    }
+    GetNoteData();
   }, [url, chan_token, folder_id]);
 
   let shared = {
@@ -75,35 +92,75 @@ function FolderPage() {
             color: palette.primary.text,
           }}
         >
-          {folders.title}
+          {folders?.title}
         </Typography>
         <Box height="0.5rem" width="100%" />
         <SearchBar />
-        <Box height="1rem" width="100%" />
-        <Group>
-          <Folder data={shared} />
-        </Group>
-        <Box height="1.25rem" width="100%" />
-        <Box>
-          <Typography
-            variant="medBold"
-            noWrap
-            sx={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              color: palette.primary.text,
-              marginLeft: "0.5rem",
-            }}
-          >
-            Folders
-          </Typography>
-          <Box height="0.25rem" width="100%" />
-          <Group>
-            {folders.folders.map((data) => {
-              return <Folder data={data} select={select} key={data.id} />;
-            })}
-          </Group>
-        </Box>
+
+        {/* Shared Section */}
+        {!folder_id && (
+          <>
+            <Box height="1rem" width="100%" />
+            <GroupFM>
+              <Folder data={shared} />
+            </GroupFM>
+          </>
+        )}
+
+        {/* Folders Section */}
+        {folders?.folders?.length > 0 && (
+          <Box sx={{ marginTop: "1.25rem" }}>
+            <Typography
+              variant="medBold"
+              noWrap
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                color: palette.primary.text,
+                marginLeft: "0.5rem",
+              }}
+            >
+              Folders
+            </Typography>
+            <Box height="0.25rem" width="100%" />
+            <GroupFM>
+              {folders?.folders.map((data) => {
+                return <Folder data={data} select={select} key={data.id} />;
+              })}
+            </GroupFM>
+          </Box>
+        )}
+
+        {/* Notes Section */}
+        {notes && (
+          <Box sx={{ marginTop: "1.25rem" }}>
+            <Typography
+              variant="medBold"
+              noWrap
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                color: palette.primary.text,
+                marginLeft: "0.5rem",
+              }}
+            >
+              Notes
+            </Typography>
+            <Box height="0.25rem" width="100%" />
+            <GroupNF>
+              {notes.map((data, index) => {
+                return (
+                  <Note
+                    data={data}
+                    select={select}
+                    toggleSelected={(id) => setSelect(id)}
+                    key={data.id}
+                  />
+                );
+              })}
+            </GroupNF>
+          </Box>
+        )}
       </Box>
       <NavbarBuffer />
     </Box>

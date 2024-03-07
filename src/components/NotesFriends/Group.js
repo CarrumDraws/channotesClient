@@ -1,19 +1,16 @@
 import React from "react";
-import { Container } from "@mui/material";
+import { Box } from "@mui/material";
 // Widget that groups Note objects together.
 // Takes in an object of note data.
 function Group({ children }) {
-  let padding = "10px";
   return (
-    <Container
+    <Box
       // Ampersand Use https://stackoverflow.com/a/69665812
       // '>' means 'direct child'
-      disableGutters={true}
       sx={[
         {
-          padding: `${padding}`,
           // inset creates a rounded rectangle.
-          clipPath: `inset(${padding} ${padding} round 22.5px)`,
+          clipPath: `inset(0 0 round 22.5px)`,
           overflow: "hidden",
         },
         {
@@ -30,7 +27,7 @@ function Group({ children }) {
       ]}
     >
       {children}
-    </Container>
+    </Box>
   );
 }
 

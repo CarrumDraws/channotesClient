@@ -1,33 +1,64 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import { GetUser } from "../../api/users/UserCalls.js";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, Typography, useTheme } from "@mui/material";
 
-function User() {
-  let [user, setUser] = useState({});
+import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
+import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
+import SearchBar from "../../components/SearchBar.js/SearchBar";
+
+import Group from "../../components/FoldersMenus/Group";
+import Folder from "../../components/FoldersMenus/Folder";
+
+function FolderPage() {
+  const { palette, transitions } = useTheme();
   const chan_token = useSelector((state) => state.chan_token);
   const url = useSelector((state) => state.url);
-  let { chan_id } = useParams();
-
-  async function getUserData() {
-    try {
-      const res = await GetUser({
-        url: url,
-        chan_token: chan_token,
-        chan_id: chan_id,
-      });
-      setUser(res);
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
+  const [getQuery, setQuery] = useSearchParams();
   return (
-    <div>
-      <button onClick={() => getUserData()}>Get User</button>
-      User {chan_id}
-    </div>
+    <Box>
+      <TopbarBuffer />
+
+      <Box
+        display="flex"
+        flexDirection="column"
+        flexWrap="nowrap"
+        justifyContent="space-between"
+        alignItems="flex-starts"
+        sx={{ m: "1.5rem" }}
+      >
+        <Typography
+          variant="large"
+          noWrap
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            color: palette.primary.text,
+          }}
+        >
+          User
+        </Typography>
+        <Box height="0.5rem" width="100%" />
+        <SearchBar />
+        <Box height="1rem" width="100%" />
+        <button onClick={() => setQuery({ query: "New Query" })}>
+          Set Query
+        </button>
+        <button
+          onClick={() =>
+            setQuery((params) => {
+              params.delete("query");
+              return params;
+            })
+          }
+        >
+          Delete Query
+        </button>
+        Search {getQuery.get("query")}
+      </Box>
+      <NavbarBuffer />
+    </Box>
   );
 }
 
-export default User;
+export default FolderPage;

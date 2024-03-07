@@ -1,15 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography, useTheme } from "@mui/material";
+
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 function Folder({ data, level = 0, select, disabled = false }) {
+  const navigate = useNavigate();
   const { palette, transitions } = useTheme();
 
   let { id, chan_id, folder_id, title, date_created, notes, folders } = data;
 
   let [isOpen, setOpen] = useState(false);
+
+  function expand(event) {
+    event.stopPropagation();
+    setOpen(!isOpen);
+  }
+
+  function goto() {
+    navigate(`/folders/${id}`);
+  }
 
   return (
     <>
@@ -23,6 +35,9 @@ function Folder({ data, level = 0, select, disabled = false }) {
           height: "2rem",
           width: "100%",
           backgroundColor: palette.tertiary.main,
+        }}
+        onClick={() => {
+          goto();
         }}
       >
         <FolderOutlinedIcon
@@ -73,8 +88,8 @@ function Folder({ data, level = 0, select, disabled = false }) {
           </Button>
         ) : (
           <Button
-            onClick={() => {
-              setOpen(!isOpen);
+            onClick={(event) => {
+              expand(event);
             }}
             disableRipple={true}
             disabled={folders.length === 0 || disabled}
