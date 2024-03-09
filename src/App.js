@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setMode } from "./state";
 
 import Folder from "./scenes/folder";
+import Note from "./scenes/note";
 import Login from "./scenes/login";
 import Form from "./scenes/login/Form";
 import Search from "./scenes/search";
@@ -24,7 +25,7 @@ function App() {
 
   useEffect(() => {
     let path = location.pathname.split("/")[1];
-    if (path === "" || path === "folders") {
+    if (path === "" || path === "folder") {
       dispatch(
         setMode({
           mode: "light",
@@ -60,8 +61,12 @@ function App() {
           element={isAuth ? <Folder /> : <Navigate to="/login" />}
         />
         <Route
-          path="folders/:folder_id"
+          path="folder/:folder_id"
           element={isAuth ? <Folder /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="note/:note_id"
+          element={isAuth ? <Note /> : <Navigate to="/login" />}
         />
         <Route
           path="login"

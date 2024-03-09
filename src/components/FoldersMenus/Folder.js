@@ -20,7 +20,7 @@ function Folder({ data, level = 0, select, disabled = false }) {
   }
 
   function goto() {
-    navigate(`/folders/${id}`);
+    navigate(`/folder/${id}`);
   }
 
   return (

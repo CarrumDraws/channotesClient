@@ -12,8 +12,8 @@ import GroupFM from "../../components/FoldersMenus/Group";
 import Folder from "../../components/FoldersMenus/Folder";
 import Note from "../../components/NotesFriends/Note";
 
-import { GetFolder } from "../../api/folders/FolderCalls";
-import { GetNotes } from "../../api/notes/NoteCalls";
+import { GetFolder } from "../../api/folder/FolderCalls";
+import { GetNotes } from "../../api/note/NoteCalls";
 
 function FolderPage() {
   const { palette, transitions } = useTheme();
@@ -132,7 +132,7 @@ function FolderPage() {
         )}
 
         {/* Notes Section */}
-        {notes && (
+        {notes?.length > 0 && (
           <Box sx={{ marginTop: "1.25rem" }}>
             <Typography
               variant="medBold"

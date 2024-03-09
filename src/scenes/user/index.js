@@ -16,8 +16,8 @@ import Folder from "../../components/FoldersMenus/Folder";
 import Note from "../../components/NotesFriends/Note";
 
 import { GetUser } from "../../api/users/UserCalls";
-import { GetFolder } from "../../api/folders/FolderCalls";
-import { GetNotes } from "../../api/notes/NoteCalls";
+import { GetFolder } from "../../api/folder/FolderCalls";
+import { GetNotes } from "../../api/note/NoteCalls";
 
 function FolderPage() {
   const { palette, transitions } = useTheme();
