@@ -236,7 +236,7 @@ function Form() {
                 </Button>
               </Grid2>
               <Grid2 xs={12}>
-                <Button
+                {/* <Button
                   onClick={() => {
                     dispatch(setMode());
                   }}
@@ -244,7 +244,7 @@ function Form() {
                   fullWidth
                 >
                   Change ColorMode
-                </Button>
+                </Button> */}
               </Grid2>
             </Grid2>
           </Box>

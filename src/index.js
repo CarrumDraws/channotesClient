@@ -1,4 +1,6 @@
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
+
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
@@ -46,7 +48,9 @@ root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistStore(store)}>
       <ThemeProvider theme={themeSettings}>
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ThemeProvider>
     </PersistGate>
   </Provider>

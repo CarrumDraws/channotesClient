@@ -10,7 +10,7 @@ import SearchBar from "../../components/SearchBar.js/SearchBar";
 import Group from "../../components/FoldersMenus/Group";
 import Folder from "../../components/FoldersMenus/Folder";
 
-function FolderPage() {
+function SearchPage() {
   const { palette, transitions } = useTheme();
   const chan_token = useSelector((state) => state.chan_token);
   const url = useSelector((state) => state.url);
@@ -61,4 +61,4 @@ function FolderPage() {
   );
 }
 
-export default FolderPage;
+export default SearchPage;

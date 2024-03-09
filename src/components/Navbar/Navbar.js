@@ -10,6 +10,7 @@ function Navbar() {
   const location = useLocation();
   const [page, setPage] = useState("home");
 
+  const mode = useSelector((state) => state.mode);
   const image = useSelector((state) => state.image);
   const firstName = useSelector((state) => state.first_name);
   const chanId = useSelector((state) => state.chan_id);
@@ -37,9 +38,26 @@ function Navbar() {
         height="20%"
         width="100%"
         style={{
+          background: `linear-gradient(0deg, ${palette.quarternary.main} 0%, ${
+            palette.quarternary.main + "00"
+          } 100%)`,
+          opacity: mode === "light" ? "0" : "1",
+          transition:
+            transitions.duration.short + " " + transitions.easing.easeIn,
+        }}
+      />
+      <Box
+        height="20%"
+        width="100%"
+        position="absolute"
+        top="0%"
+        style={{
           background: `linear-gradient(0deg, ${palette.primary.main} 0%, ${
             palette.primary.main + "00"
           } 100%)`,
+          opacity: mode === "light" ? "1" : "0",
+          transition:
+            transitions.duration.short + " " + transitions.easing.easeIn,
         }}
       />
       {/* Background color */}

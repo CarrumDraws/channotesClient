@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { Box, Typography, useTheme, SvgIcon } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import { Box, Typography, useTheme, SvgIcon } from "@mui/material";
+
+import ProfPic from "../subcomponents/ProfPic";
+
 import { ReactComponent as HomeIcon } from "../../icons/Home.svg";
 import { ReactComponent as AlertsIcon } from "../../icons/Alerts.svg";
 import { ReactComponent as SearchIcon } from "../../icons/Search.svg";
-import ProfPic from "../subcomponents/ProfPic";
+
 function Button({ pageType, currPage, setPage, userData = {}, disabled }) {
+  const mode = useSelector((state) => state.mode);
   const { palette, transitions } = useTheme();
   const navigate = useNavigate();
   const { image, name, chanid } = userData;
@@ -23,11 +29,13 @@ function Button({ pageType, currPage, setPage, userData = {}, disabled }) {
     transform: "translate(-50%, -40%)",
     transition: "0.2s",
   };
+  let bkrdColor =
+    mode === "light" ? palette.primary.main : palette.quarternary.main;
   let color = disabled
     ? palette.secondary.alt
     : checkPage()
     ? palette.primary.text
-    : palette.primary.main;
+    : bkrdColor;
 
   return (
     <>
@@ -39,7 +47,7 @@ function Button({ pageType, currPage, setPage, userData = {}, disabled }) {
           top="0%"
           left="10%"
           sx={{
-            backgroundColor: palette.primary.main,
+            backgroundColor: bkrdColor,
             transition: checkPage() ? "0.1s linear " : "0.1s linear ",
             height: checkPage() ? "50%" : "0%",
           }}
@@ -142,7 +150,7 @@ function Button({ pageType, currPage, setPage, userData = {}, disabled }) {
               transition: "all .2s cubic-bezier(0.68, -0.6, 0.32, 1.6)",
             }}
             cy={checkPage() ? "50%" : "-50%"}
-            fill={palette.primary.main}
+            fill={bkrdColor}
           />
           <rect
             width="100%"
@@ -151,7 +159,7 @@ function Button({ pageType, currPage, setPage, userData = {}, disabled }) {
               transition: "all .2s cubic-bezier(0.68, -0.6, 0.32, 1.6)",
             }}
             y={checkPage() ? "-50%" : "-150%"}
-            fill={palette.primary.main}
+            fill={bkrdColor}
           />
         </svg>
       </Box>

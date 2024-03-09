@@ -75,6 +75,23 @@ export const themeSettings = createTheme({
     h5: undefined,
     h6: undefined,
   },
+  transitions: {
+    duration: {
+      shortest: 150,
+      shorter: 200,
+      short: "0.2s",
+      standard: 300,
+      complex: 375,
+      enteringScreen: 225,
+      leavingScreen: 195,
+    },
+    easing: {
+      easeInOut: "cubic-bezier(0.4, 0, 0.2, 1)",
+      easeOut: "cubic-bezier(0.0, 0, 0.2, 1)",
+      easeIn: "cubic-bezier(0.4, 0, 1, 1)",
+      sharp: "cubic-bezier(0.4, 0, 0.6, 1)",
+    },
+  },
 });
 
 export default themeSettings;

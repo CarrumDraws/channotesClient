@@ -4,7 +4,7 @@ let dev = "http://localhost:5000";
 let prod = "https://channotes-server.onrender.com";
 
 const initialState = {
-  mode: "light", // Dark/Light Mode
+  mode: "light", // Dark/Light Mode for yellow/blue colors
   email: null, // Email, used as Username
   google_id: null, // Google 'sub' value, used as Password
   chan_token: null, // Backend JWTToken, used as ID
@@ -23,8 +23,8 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     // Sets Darkmode/Lightmode
-    setMode: (state) => {
-      state.mode = state.mode === "light" ? "dark" : "light";
+    setMode: (state, action) => {
+      state.mode = action.payload.mode;
     },
     // Set User Login
     setLogin: (state, action) => {
