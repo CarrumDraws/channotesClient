@@ -54,7 +54,7 @@ function App() {
       }}
     >
       <Topbar />
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         <Route
           path="/"

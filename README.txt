@@ -15,6 +15,8 @@ Libraries:
 - @mui/material: Material UI
 - @emotion/react: Icons
 
+- quill: Notetaking component
+
 - gsap: Animation
 
 Todo: 
