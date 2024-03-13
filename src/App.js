@@ -21,6 +21,7 @@ function App() {
   const dispatch = useDispatch();
   const isAuth = Boolean(useSelector((state) => state.chan_token));
   const mode = useSelector((state) => state.mode);
+  const url = useSelector((state) => state.url);
   const { palette, transitions } = useTheme();
 
   useEffect(() => {
