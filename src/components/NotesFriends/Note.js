@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Checkbox } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
+
+import Thumbnail from "../subcomponents/Thumbnail.js";
+import cleanDate from "../helperFuncs/cleanDate.js";
+
 import RadioButtonUncheckedOutlinedIcon from "@mui/icons-material/RadioButtonUncheckedOutlined";
 import RadioButtonCheckedOutlinedIcon from "@mui/icons-material/RadioButtonCheckedOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -10,9 +15,6 @@ import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import Checkbox from "@mui/material/Checkbox";
-import Thumbnail from "../subcomponents/Thumbnail.js";
-import cleanDate from "../helperFuncs/cleanDate.js";
 
 function Note({
   data,
@@ -22,12 +24,13 @@ function Note({
   active = false,
 }) {
   const { palette, transitions } = useTheme();
-  const noteRef = useRef(null);
   const [mouseDown, setMouseDown] = useState(false);
   const [dragStart, setDragStart] = useState(0); // Mouse X-Position when Start Dragging
   const [currDrag, setCurrDrag] = useState(0); // Mouse X-Position while Dragging
   const [xPos, setXPos] = useState(0); // Final X-Position. Ranges from 0 - -192 (48 * 4)
   const [prevXPos, setPrevXPos] = useState(-48); // X-Position of prev drag
+  const navigate = useNavigate();
+  const noteRef = useRef(null);
 
   let {
     id,
@@ -82,6 +85,10 @@ function Note({
           setPrevXPos(myPosObj.x);
         },
       });
+  }
+
+  function goto() {
+    navigate(`/note/${id}`);
   }
 
   return (
@@ -182,6 +189,9 @@ function Note({
           backgroundColor: active
             ? palette.tertiary.alt
             : palette.tertiary.main,
+        }}
+        onClick={() => {
+          goto();
         }}
       >
         {select && (

@@ -26,6 +26,7 @@ const toolbarOptions = [
 function Note() {
   const { palette, transitions } = useTheme();
   const chan_token = useSelector((state) => state.chan_token);
+  const chan_id = useSelector((state) => state.chan_id);
   const url = useSelector((state) => state.url);
 
   let { note_id } = useParams();
@@ -38,7 +39,6 @@ function Note() {
     const s = io("http://localhost:5000");
     setSocket(s);
     return () => {
-      console.log(s);
       s.disconnect();
     };
   }, []);
@@ -64,14 +64,13 @@ function Note() {
   // Get Existing Document from note_id
   useEffect(() => {
     if (!socket || !quill) return;
-    socket.emit("get-document", note_id); // Pass note_id to socket...
+    socket.emit("get-document", chan_token, note_id); // Pass note_id to socket...
     // ...retrieve document from socket
-    socket.once("load-document", (delta) => {
-      console.log(delta);
-      quill.setContents(delta);
+    socket.once("load-document", (data) => {
+      quill.setContents(data.text);
       quill.enable();
     });
-  }, [socket, quill, note_id]);
+  }, [socket, quill, chan_token, note_id]);
 
   // Detect Text Changes on Doc -> Send to server
   useEffect(() => {
@@ -98,12 +97,24 @@ function Note() {
     };
   }, [socket, quill]);
 
-  // Auto-Save document every 2 seconds
+  // Detect Errors
+  useEffect(() => {
+    if (!socket || !quill) return;
+    const handler = (error) => {
+      console.log(error);
+    };
+    socket.on("error", handler); // Add event listener
+    return () => {
+      socket.off("error", handler); // Remove event listener
+    };
+  }, [socket, quill]);
+
+  // Auto-Save document every 4 seconds
   useEffect(() => {
     if (!socket || !quill) return;
     const interval = setInterval(() => {
-      socket.emit("save-document", quill.getContents());
-    }, 2000);
+      socket.emit("save-document", chan_id, "Poop", quill.getContents());
+    }, 4000);
     return () => {
       clearInterval(interval);
     };
