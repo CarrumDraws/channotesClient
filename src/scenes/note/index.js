@@ -36,7 +36,7 @@ function Note() {
 
   // Initialize SocketIO
   useEffect(() => {
-    const s = io("http://localhost:5000");
+    const s = io(url);
     setSocket(s);
     return () => {
       s.disconnect();
