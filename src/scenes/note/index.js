@@ -10,6 +10,7 @@ import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
 import Quill from "quill";
 import "quill/dist/quill.snow.css"; // stylesheet included in library
 import "./index.css";
+import Title from "../../components/subcomponents/Title";
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -33,6 +34,7 @@ function Note() {
 
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
+  const [title, setTitle] = useState("New Note");
 
   // Initialize SocketIO
   useEffect(() => {
@@ -69,6 +71,7 @@ function Note() {
     socket.once("load-document", (data) => {
       quill.setContents(data.text);
       quill.enable();
+      updateTitle(quill);
     });
   }, [socket, quill, chan_token, note_id]);
 
@@ -77,6 +80,7 @@ function Note() {
     if (!socket || !quill) return;
     const handler = (delta, oldDelta, source) => {
       if (source !== "user") return; // Make sure only changes by user detected
+      updateTitle(quill);
       socket.emit("send-changes", delta); // Send 'send-changes' event w/delta to server
     };
     quill.on("text-change", handler); // Add event listener
@@ -90,6 +94,7 @@ function Note() {
     if (!socket || !quill) return;
     const handler = (delta) => {
       quill.updateContents(delta);
+      updateTitle(quill);
     };
     socket.on("recieve-changes", handler); // Add event listener
     return () => {
@@ -109,20 +114,36 @@ function Note() {
     };
   }, [socket, quill]);
 
-  // Auto-Save document every 4 seconds
+  // Auto-Save document every 15 seconds + Save when nav-ing away
   useEffect(() => {
     if (!socket || !quill) return;
+
     const interval = setInterval(() => {
-      socket.emit("save-document", chan_id, "Poop", quill.getContents());
-    }, 4000);
+      socket.emit("save-document", chan_id, title, quill.getContents());
+    }, 15000);
+
+    const handleVis = () => {
+      if (document.visibilityState === "hidden")
+        socket.emit("save-document", chan_id, title, quill.getContents());
+    };
+
+    window.addEventListener("visibilitychange", handleVis);
+
     return () => {
       clearInterval(interval);
+      // Remove the event listener when the component unmounts
+      window.removeEventListener("visibilitychange", handleVis);
     };
-  }, [socket, quill]);
+  }, [socket, quill, chan_id, title]);
+
+  function updateTitle(myQuill) {
+    setTitle(myQuill.getText(0, 20));
+  }
 
   return (
     <>
       <TopbarBuffer />
+      <Title title={title} />
       <Box id="container" ref={wrapperRef} />
     </>
   );
