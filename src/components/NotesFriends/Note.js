@@ -37,11 +37,12 @@ function Note({
     chan_id,
     folder_id,
     title,
-    subtitle,
+    subtext,
     date_created,
     date_edited,
     pinned,
     locked,
+    password,
   } = data;
 
   // Calculates drag distance based off dragStart and currDrag
@@ -86,11 +87,9 @@ function Note({
         },
       });
   }
-
   function goto() {
     navigate(`/note/${id}`);
   }
-
   return (
     <Box
       ref={noteRef}
@@ -237,13 +236,10 @@ function Note({
           }}
         >
           <Typography variant="med" noWrap>
-            {title}
+            {!title ? "New Note" : title}
           </Typography>
           <Typography variant="exSmall" noWrap>
-            {cleanDate(date_edited)}{" "}
-            {subtitle
-              ? subtitle
-              : "Preview Text Hereeeeeeeeeeeeeeeeeeeeeeeeeee"}
+            {cleanDate(date_edited)} {subtext ? subtext : ""}
           </Typography>
         </Box>
         <Box

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 
-function Title({ title }) {
+function DateBar({ date }) {
   const { palette, transitions } = useTheme();
   return (
     <Box
@@ -24,10 +24,10 @@ function Title({ title }) {
           transform: "translate(0%, -100%)",
         }}
       >
-        {title}
+        {date}
       </Typography>
     </Box>
   );
 }
 
-export default Title;
+export default DateBar;

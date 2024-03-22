@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Box, Typography, useTheme } from "@mui/material";
@@ -6,11 +6,11 @@ import { io } from "socket.io-client";
 
 import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
 import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
+import DateBar from "../../components/subcomponents/DateBar";
 
 import Quill from "quill";
 import "quill/dist/quill.snow.css"; // stylesheet included in library
 import "./index.css";
-import Title from "../../components/subcomponents/Title";
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -35,6 +35,7 @@ function Note() {
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
   const [title, setTitle] = useState("New Note");
+  const [subtext, setSubtext] = useState("");
 
   // Initialize SocketIO
   useEffect(() => {
@@ -71,16 +72,16 @@ function Note() {
     socket.once("load-document", (data) => {
       quill.setContents(data.text);
       quill.enable();
-      updateTitle(quill);
+      updateData(quill);
     });
   }, [socket, quill, chan_token, note_id]);
 
-  // Detect Text Changes on Doc -> Send to server
+  // Detect Text Changes on Doc -> Send to websocket server
   useEffect(() => {
     if (!socket || !quill) return;
     const handler = (delta, oldDelta, source) => {
       if (source !== "user") return; // Make sure only changes by user detected
-      updateTitle(quill);
+      updateData(quill);
       socket.emit("send-changes", delta); // Send 'send-changes' event w/delta to server
     };
     quill.on("text-change", handler); // Add event listener
@@ -89,12 +90,12 @@ function Note() {
     };
   }, [socket, quill]);
 
-  // Detect Text Changes on Server -> Update on Doc
+  // Detect Text Changes on websocket server -> Update on Doc
   useEffect(() => {
     if (!socket || !quill) return;
     const handler = (delta) => {
       quill.updateContents(delta);
-      updateTitle(quill);
+      updateData(quill);
     };
     socket.on("recieve-changes", handler); // Add event listener
     return () => {
@@ -116,34 +117,41 @@ function Note() {
 
   // Auto-Save document every 15 seconds + Save when nav-ing away
   useEffect(() => {
-    if (!socket || !quill) return;
-
-    const interval = setInterval(() => {
-      socket.emit("save-document", chan_id, title, quill.getContents());
-    }, 15000);
-
+    if (!socket || !quill || !document.getElementById("container")) return;
+    const interval = setInterval(() => saveData(), 15000);
     const handleVis = () => {
-      if (document.visibilityState === "hidden")
-        socket.emit("save-document", chan_id, title, quill.getContents());
+      if (document.visibilityState === "hidden") saveData();
     };
-
+    const saveData = () => {
+      console.log("SAved");
+      socket.emit(
+        "save-document",
+        chan_id,
+        title,
+        subtext,
+        quill.getContents()
+      );
+    };
     window.addEventListener("visibilitychange", handleVis);
-
     return () => {
-      clearInterval(interval);
       // Remove the event listener when the component unmounts
+      clearInterval(interval);
       window.removeEventListener("visibilitychange", handleVis);
     };
-  }, [socket, quill, chan_id, title]);
+  }, [socket, quill, chan_id, title, subtext]);
 
-  function updateTitle(myQuill) {
-    setTitle(myQuill.getText(0, 20));
+  function updateData(myQuill) {
+    // myQuill.getText is always at least 1 due to '/n'
+    setTitle(
+      myQuill.getText(0, 20).length === 1 ? null : myQuill.getText(0, 20)
+    );
+    setSubtext(myQuill.getText(20, 50));
   }
 
   return (
     <>
       <TopbarBuffer />
-      <Title title={title} />
+      <DateBar date={title} />
       <Box id="container" ref={wrapperRef} />
     </>
   );
