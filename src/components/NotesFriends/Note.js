@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Box, Typography, useTheme, Checkbox } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
+
+import { EditNote } from "../../api/note/NoteCalls.js";
 
 import Thumbnail from "../subcomponents/Thumbnail.js";
 import cleanDate from "../helperFuncs/cleanDate.js";
@@ -23,27 +26,50 @@ function Note({
   shared = false,
   active = false,
 }) {
+  const navigate = useNavigate();
   const { palette, transitions } = useTheme();
+
+  const chan_token = useSelector((state) => state.chan_token);
+  const url = useSelector((state) => state.url);
+
+  const firstRender = useRef(true);
   const [mouseDown, setMouseDown] = useState(false);
   const [dragStart, setDragStart] = useState(0); // Mouse X-Position when Start Dragging
   const [currDrag, setCurrDrag] = useState(0); // Mouse X-Position while Dragging
   const [xPos, setXPos] = useState(0); // Final X-Position. Ranges from 0 - -192 (48 * 4)
   const [prevXPos, setPrevXPos] = useState(-48); // X-Position of prev drag
-  const navigate = useNavigate();
-  const noteRef = useRef(null);
 
-  let {
-    id,
-    chan_id,
-    folder_id,
-    title,
-    subtext,
-    date_created,
-    date_edited,
-    pinned,
-    locked,
-    password,
-  } = data;
+  const [folder, setFolder] = useState(data.folder_id);
+  const [pinned, setPinned] = useState(data.pinned);
+  const [locked, setLocked] = useState(data.locked);
+  const [password, setPassword] = useState(data.password);
+
+  let { id, chan_id, title, subtext, date_created, date_edited } = data;
+
+  // Edits note when dependancies change
+  useEffect(() => {
+    // Prevents first render
+    if (firstRender.current) firstRender.current = false;
+    else {
+      async function CallEditNote() {
+        try {
+          await EditNote({
+            url: url,
+            chan_token: chan_token,
+            note_id: id,
+            folder_id: folder,
+            pinned: pinned,
+            locked: locked,
+            password: password,
+          });
+        } catch (error) {
+          console.log(error.message);
+          navigate("/error");
+        }
+      }
+      CallEditNote();
+    }
+  }, [url, chan_token, id, folder, pinned, locked, password, navigate]);
 
   // Calculates drag distance based off dragStart and currDrag
   useEffect(() => {
@@ -66,7 +92,7 @@ function Note({
           setPrevXPos(myPosObj.x);
         },
       });
-    else if (xPos < -120)
+    else if (xPos < -80)
       gsap.to(myPosObj, {
         x: -192,
         duration: 0.75,
@@ -76,7 +102,8 @@ function Note({
           setPrevXPos(myPosObj.x);
         },
       });
-    else
+    else {
+      if (dragStart === currDrag) navigate(`/note/${id}`);
       gsap.to(myPosObj, {
         x: -48,
         duration: 0.75,
@@ -86,13 +113,11 @@ function Note({
           setPrevXPos(myPosObj.x);
         },
       });
+    }
   }
-  function goto() {
-    navigate(`/note/${id}`);
-  }
+
   return (
     <Box
-      ref={noteRef}
       sx={{
         position: "relative",
         display: "flex",
@@ -152,6 +177,7 @@ function Note({
             width: "100%",
             backgroundColor: palette.action.pin,
           }}
+          onClick={() => setPinned(!pinned)}
         >
           {pinned ? (
             <PushPinIcon
@@ -188,9 +214,6 @@ function Note({
           backgroundColor: active
             ? palette.tertiary.alt
             : palette.tertiary.main,
-        }}
-        onClick={() => {
-          goto();
         }}
       >
         {select && (
