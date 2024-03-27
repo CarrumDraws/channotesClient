@@ -30,7 +30,6 @@ async function EditNote({
   locked,
   password,
 }) {
-  console.log("EditNote: pinned is " + pinned);
   try {
     let route = `${url}/note?note_id=${note_id}`;
     let { data, status } = await axios.put(

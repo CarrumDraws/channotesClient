@@ -44,7 +44,7 @@ function Note({
   const [locked, setLocked] = useState(data.locked);
   const [password, setPassword] = useState(data.password);
 
-  let { id, chan_id, title, subtext, date_created, date_edited } = data;
+  let { id, chan_id, folder_id, title, text, date_created, date_edited } = data;
 
   // Edits note when dependancies change
   useEffect(() => {
@@ -262,7 +262,7 @@ function Note({
             {!title ? "New Note" : title}
           </Typography>
           <Typography variant="exSmall" noWrap>
-            {cleanDate(date_edited)} {subtext ? subtext : ""}
+            {cleanDate(date_edited)} {text ? text : ""}
           </Typography>
         </Box>
         <Box

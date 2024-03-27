@@ -35,7 +35,6 @@ function Note() {
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
   const [title, setTitle] = useState("New Note");
-  const [subtext, setSubtext] = useState("");
 
   // Initialize SocketIO
   useEffect(() => {
@@ -70,18 +69,16 @@ function Note() {
     socket.emit("get-document", chan_token, note_id); // Pass note_id to socket...
     // ...retrieve document from socket
     socket.once("load-document", (data) => {
-      quill.setContents(data.text);
+      quill.setContents(data.delta);
       quill.enable();
-      updateData(quill);
     });
   }, [socket, quill, chan_token, note_id]);
 
-  // Detect Text Changes on Doc -> Send to websocket server
+  // Detect Delta Changes on Doc -> Send to Server
   useEffect(() => {
     if (!socket || !quill) return;
     const handler = (delta, oldDelta, source) => {
       if (source !== "user") return; // Make sure only changes by user detected
-      updateData(quill);
       socket.emit("send-changes", delta); // Send 'send-changes' event w/delta to server
     };
     quill.on("text-change", handler); // Add event listener
@@ -90,12 +87,11 @@ function Note() {
     };
   }, [socket, quill]);
 
-  // Detect Text Changes on websocket server -> Update on Doc
+  // Detect Changes on Server -> Update on Doc
   useEffect(() => {
     if (!socket || !quill) return;
     const handler = (delta) => {
       quill.updateContents(delta);
-      updateData(quill);
     };
     socket.on("recieve-changes", handler); // Add event listener
     return () => {
@@ -122,31 +118,23 @@ function Note() {
     const handleVis = () => {
       if (document.visibilityState === "hidden") saveData();
     };
+    window.addEventListener("visibilitychange", handleVis);
+
     const saveData = () => {
-      console.log("SAved");
+      console.log("Saved");
       socket.emit(
         "save-document",
         chan_id,
-        title,
-        subtext,
+        quill.getText(),
         quill.getContents()
       );
     };
-    window.addEventListener("visibilitychange", handleVis);
     return () => {
       // Remove the event listener when the component unmounts
       clearInterval(interval);
       window.removeEventListener("visibilitychange", handleVis);
     };
-  }, [socket, quill, chan_id, title, subtext]);
-
-  function updateData(myQuill) {
-    // myQuill.getText is always at least 1 due to '/n'
-    setTitle(
-      myQuill.getText(0, 20).length === 1 ? null : myQuill.getText(0, 20)
-    );
-    setSubtext(myQuill.getText(20, 50));
-  }
+  }, [socket, quill, chan_id]);
 
   return (
     <>

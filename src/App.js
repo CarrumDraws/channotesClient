@@ -73,6 +73,7 @@ function App() {
           path="login"
           element={isAuth ? <Navigate to="/" /> : <Login />}
         />
+        {/* Fix editProfile race condition routing on user signup */}
         <Route
           path="editprofile"
           element={isAuth ? <Form /> : <Navigate to="/login" />}

@@ -10,7 +10,7 @@ function Folder({ data, level = 0, select, disabled = false }) {
   const navigate = useNavigate();
   const { palette, transitions } = useTheme();
 
-  let { id, chan_id, folder_id, title, date_created, notes, folders } = data;
+  let { id, chan_id, folder_id, title, notes, folders, special } = data;
 
   let [isOpen, setOpen] = useState(false);
 
@@ -108,7 +108,7 @@ function Folder({ data, level = 0, select, disabled = false }) {
                     : palette.tertiary.text,
               }}
             >
-              {folders.length}
+              {notes}
             </Typography>
             <KeyboardArrowRightIcon
               sx={{

@@ -38,6 +38,12 @@ function FolderPage() {
           chan_token: chan_token,
           folder_id: folder_id,
         });
+        res.folders = res.folders.sort((a, b) => {
+          if (a.special !== b.special) {
+            return a.special ? -1 : 1;
+          }
+          return a.title.localeCompare(b.title);
+        });
         setFolders(res);
       } catch (error) {
         console.log(error.message);

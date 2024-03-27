@@ -104,13 +104,13 @@ function Form() {
       // onSubmitProps.resetForm();
 
       // Navigate Home
-      // navigate("/home");
+      navigate("/");
     } catch (error) {
       if (error?.response?.data?.message)
         console.log(error.response.data.message); // AxiosError
       else console.log(error.message);
 
-      // navigate("/error");
+      navigate("/error");
     }
   }
 
