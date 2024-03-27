@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Box, Typography, useTheme } from "@mui/material";
 
-function index() {
+function Index() {
   return <div>Test</div>;
 }
 
-export default index;
+export default Index;

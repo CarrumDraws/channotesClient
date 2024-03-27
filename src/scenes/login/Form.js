@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData, setMode } from "../../state";
-import RefreshData from "../../widgets/RefreshData";
 
 import { Formik } from "formik"; // Error Handling/Form Validation
 import * as yup from "yup"; // Form Validation
@@ -33,10 +33,6 @@ function Form() {
 
   const { palette, transitions } = useTheme();
 
-  // useEffect(() => {
-  //   RefreshData(dispatch, chan_token, url, chan_id);
-  // }, []);
-
   // Schemas
   const profileSchema = yup.object().shape({
     first_name: yup.string().required("required"),
@@ -54,67 +50,69 @@ function Form() {
   };
 
   // Send data to Backend + Save to local storage
-  const handleFormSubmit = async (values, onSubmitProps) => {
-    // default values: first_name: 'Calum', last_name: 'Chan', username: 'Carrum', image: 'URL'
-    // altered values: first_name: 'Calum', last_name: 'Chan', username: 'Carrum', image: File {path: 'Dough Nut.png', name: 'Dough Nut.png'}
-
-    let res;
-
-    if (typeof values.image === "string") {
-      console.log("Image Unchanged");
-      res = await fetch(`${url}/users/noimage`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${chan_token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+  async function handleFormSubmit(values, onSubmitProps) {
+    try {
+      let returnedData;
+      if (typeof values.image === "string") {
+        console.log("Image Unchanged");
+        let { data } = await axios.put(
+          `${url}/users/noimage`,
+          {
+            first_name: values.first_name,
+            last_name: values.last_name,
+            username: values.username,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${chan_token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        returnedData = data;
+      } else {
+        console.log("New Image");
+        // Prep Image File
+        const newFile = new File([values.image], values.image.name, {
+          type: values.image.type,
+        });
+        let formDataValues = {
           first_name: values.first_name,
           last_name: values.last_name,
           username: values.username,
-        }),
-      });
-    } else {
-      console.log("New Image");
-      // Rename File by making new file with new name!
-      const newFile = new File([values.image], values.image.name, {
-        type: values.image.type,
-      });
-      let formDataValues = {
-        first_name: values.first_name,
-        last_name: values.last_name,
-        username: values.username,
-        image: newFile,
-      };
-      const formData = new FormData();
-      for (let formDataValue in formDataValues) {
-        formData.append(formDataValue, formDataValues[formDataValue]);
+          image: newFile,
+        };
+        const formData = new FormData();
+        for (let formDataValue in formDataValues) {
+          formData.append(formDataValue, formDataValues[formDataValue]);
+        }
+        // Send Data
+        let { data } = await axios.put(`${url}/users`, formData, {
+          headers: { Authorization: `Bearer ${chan_token}` },
+        });
+        returnedData = data;
       }
-      res = await fetch(`${url}/users`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${chan_token}` },
-        body: formData,
-      });
-    }
-
-    if (res.ok) {
-      let data = await res.json();
+      // Set State Info
       dispatch(
         setUserData({
-          username: data.username,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          image: data.image,
+          username: returnedData.username,
+          first_name: returnedData.first_name,
+          last_name: returnedData.last_name,
+          image: returnedData.image,
         })
       );
+      // onSubmitProps.resetForm();
 
-      onSubmitProps.resetForm();
-      navigate("/home");
-    } else {
-      console.log("handleFormSubmit Failed");
-      console.log(res);
+      // Navigate Home
+      // navigate("/home");
+    } catch (error) {
+      if (error?.response?.data?.message)
+        console.log(error.response.data.message); // AxiosError
+      else console.log(error.message);
+
+      // navigate("/error");
     }
-  };
+  }
 
   const handleDrop = (acceptedFile) => {
     const reader = new FileReader();
@@ -234,17 +232,6 @@ function Form() {
                 <Button type="submit" variant="contained" fullWidth>
                   Submit
                 </Button>
-              </Grid2>
-              <Grid2 xs={12}>
-                {/* <Button
-                  onClick={() => {
-                    dispatch(setMode());
-                  }}
-                  variant="contained"
-                  fullWidth
-                >
-                  Change ColorMode
-                </Button> */}
               </Grid2>
             </Grid2>
           </Box>
