@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 
 import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
 import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
-import DateBar from "../../components/subcomponents/DateBar";
+import TitleBar from "../../components/subcomponents/TitleBar";
 
 import Quill from "quill";
 import "quill/dist/quill.snow.css"; // stylesheet included in library
@@ -35,7 +35,7 @@ function Note() {
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
   const [title, setTitle] = useState("New Note");
-
+  const [date, setDate] = useState(null);
   // Initialize SocketIO
   useEffect(() => {
     const s = io(url);
@@ -63,7 +63,7 @@ function Note() {
     setQuill(q);
   }, []);
 
-  // Get Existing Document from note_id
+  // Get Existing Title and Delta from note_id
   useEffect(() => {
     if (!socket || !quill) return;
     socket.emit("get-document", chan_token, note_id); // Pass note_id to socket...
@@ -71,6 +71,8 @@ function Note() {
     socket.once("load-document", (data) => {
       quill.setContents(data.delta);
       quill.enable();
+      setTitle(data.title);
+      setDate(data.date_created);
     });
   }, [socket, quill, chan_token, note_id]);
 
@@ -79,7 +81,7 @@ function Note() {
     if (!socket || !quill) return;
     const handler = (delta, oldDelta, source) => {
       if (source !== "user") return; // Make sure only changes by user detected
-      socket.emit("send-changes", delta); // Send 'send-changes' event w/delta to server
+      socket.emit("send-text-changes", delta); // Send 'send-text-changes' event w/delta to server
     };
     quill.on("text-change", handler); // Add event listener
     return () => {
@@ -87,15 +89,28 @@ function Note() {
     };
   }, [socket, quill]);
 
-  // Detect Changes on Server -> Update on Doc
+  // Detect Title Changes -> Send to Server > Calls save-title
+  useEffect(() => {
+    if (!socket) return;
+    console.log("Updating Title");
+    socket.emit("send-title-changes", chan_id, title);
+    setTitle(title);
+  }, [socket, chan_id, title]);
+
+  // Detect Delta and Title Changes on Server -> Update on Doc
   useEffect(() => {
     if (!socket || !quill) return;
-    const handler = (delta) => {
+    const textHandler = (delta) => {
       quill.updateContents(delta);
     };
-    socket.on("recieve-changes", handler); // Add event listener
+    const titleHandler = (title) => {
+      setTitle(title);
+    };
+    socket.on("recieve-text-changes", textHandler); // Add event listener
+    socket.on("recieve-title-changes", titleHandler);
     return () => {
-      socket.off("recieve-changes", handler); // Remove event listener
+      socket.off("recieve-text-changes", textHandler); // Remove event listener
+      socket.off("recieve-title-changes", titleHandler);
     };
   }, [socket, quill]);
 
@@ -111,7 +126,7 @@ function Note() {
     };
   }, [socket, quill]);
 
-  // Auto-Save document every 15 seconds + Save when nav-ing away
+  // Auto-Save Delta and Text every 15 seconds + Save when nav-ing away
   useEffect(() => {
     if (!socket || !quill || !document.getElementById("container")) return;
     const interval = setInterval(() => saveData(), 15000);
@@ -122,12 +137,7 @@ function Note() {
 
     const saveData = () => {
       console.log("Saved");
-      socket.emit(
-        "save-document",
-        chan_id,
-        quill.getText(),
-        quill.getContents()
-      );
+      socket.emit("save-text", chan_id, quill.getText(), quill.getContents());
     };
     return () => {
       // Remove the event listener when the component unmounts
@@ -139,7 +149,7 @@ function Note() {
   return (
     <>
       <TopbarBuffer />
-      <DateBar date={title} />
+      <TitleBar title={title} date={date} />
       <Box id="container" ref={wrapperRef} />
     </>
   );

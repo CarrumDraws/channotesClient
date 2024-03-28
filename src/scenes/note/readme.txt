@@ -11,3 +11,14 @@ You now have to change the title by changin the text in the textbox.
 For future changes, I think it would be best if the text for a given note is completely seperate from other data in the note.
 
 Questions: What is the "quill" object? does it trigger useEffect when i edit the contents of the editor?
+
+get-document
+load-document
+
+send-text-changes
+recieve-text-changes
+save-text
+
+send-title-changes
+recieve-title-changes
+save-title
