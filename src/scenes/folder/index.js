@@ -5,7 +5,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 
 import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
 import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
-import SearchBar from "../../components/SearchBar.js/SearchBar";
+import SearchBar from "../../components/TextInput/SearchBar";
 
 import GroupNF from "../../components/NotesFriends/Group";
 import GroupFM from "../../components/FoldersMenus/Group";

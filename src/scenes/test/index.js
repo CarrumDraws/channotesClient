@@ -1,24 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, forwardRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Typography,
   useTheme,
-  Backdrop,
+  Dialog,
   Slide,
-  TextField,
-  Input,
   Button,
 } from "@mui/material";
+
+import TextInput from "../../components/TextInput/TextInput";
+import ButtonSmall from "../../components/Buttons/ButtonSmall";
+import ButtonSmallPair from "../../components/Buttons/ButtonSmallPair";
 
 import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
 import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
 
-function Test() {
-  const { palette, transitions } = useTheme();
+// Has to be outside so Transition closes correctly
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
-  const [open, setOpen] = React.useState(false);
+function Test() {
+  const { palette, typography, transitions } = useTheme();
+
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("Old Title");
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -26,33 +35,35 @@ function Test() {
     setOpen(true);
   };
 
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
+  function handleSubmit(event) {
+    console.log(event);
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const formJson = Object.fromEntries(formData.entries());
+    const data = formJson.data;
+    console.log(data);
+    setTitle(data);
+    handleClose();
+  }
 
   return (
     <Box>
       <TopbarBuffer />
       <div>
+        {title}
         <button onClick={handleOpen}>Show backdrop</button>
-        {/* Background */}
-        <Backdrop
-          sx={{
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-            direction: "down",
-          }}
+
+        <Dialog
           open={open}
-          onClick={handleClose}
-        />
-        {/* Foreground */}
-        <Backdrop
-          sx={{
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-          }}
-          open={open}
-          onClick={handleClose}
-          invisible={true}
           TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          PaperProps={{
+            component: "form",
+            onSubmit: (event) => {
+              handleSubmit(event);
+            },
+          }}
         >
           <Box
             display="flex"
@@ -60,48 +71,47 @@ function Test() {
             alignItems="center"
             gap="10px"
             borderRadius="22px"
-            padding="20px"
+            padding="10px 20px 10px 20px"
             backgroundColor={palette.tertiary.main}
-            sx={{}}
           >
             <Typography
               variant="medBold"
-              noWrap
               sx={{
                 color: palette.tertiary.text,
               }}
             >
               Edit Title
             </Typography>
+
             <Typography
               variant="medThin"
-              noWrap
               sx={{
                 color: palette.tertiary.text,
               }}
             >
               Enter a new title for this note.
             </Typography>
-            <TextField
-              hiddenLabel
-              width="100px"
-              id="filled-hidden-label-small"
-              defaultValue="Old Title"
-              variant="filled"
-              size="small"
-            />
+
+            <TextInput name="data" defaultValue={title} />
+
             <Box
               display="flex"
               flexDirection="row"
               alignItems="center"
-              gap="15px"
-              sx={{}}
+              width="100%"
+              justifyContent="space-around"
             >
-              <Button>Hello</Button>
-              <Button>World</Button>
+              <ButtonSmall
+                text="Cancel"
+                trigFunc={() => {
+                  handleClose();
+                }}
+                outlined
+              />
+              <ButtonSmall text="Save" type="submit" trigFunc={() => {}} />
             </Box>
           </Box>
-        </Backdrop>
+        </Dialog>
       </div>
       <NavbarBuffer />
     </Box>
