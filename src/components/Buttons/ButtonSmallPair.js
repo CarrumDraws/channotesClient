@@ -17,7 +17,7 @@ function ButtonSmallPair({
       justifyContent="space-around"
     >
       <ButtonSmall text={leftText} trigFunc={leftFunc} outlined />
-      <ButtonSmall text={rightText} trigFunc={rightFunc} />
+      <ButtonSmall text={rightText} trigFunc={rightFunc} type="submit" />
     </Box>
   );
 }

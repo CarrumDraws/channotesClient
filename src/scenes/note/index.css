@@ -1,6 +1,6 @@
 #container {
   /* Screen - TopbarBuffer */
-  height: calc(100% - 8rem);
+  height: calc(100% - 9rem);
   --tertiary-main: #fff4d8;
   --tertiary-text: #281461;
   --tertiary-textSub: #8492e0;

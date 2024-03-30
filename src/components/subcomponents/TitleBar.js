@@ -3,7 +3,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import readDate from "../helperFuncs/readDate.js";
 import { flexbox } from "@mui/system";
 
-function TitleBar({ title, date }) {
+function TitleBar({ title, date, onClick }) {
   const { palette, transitions } = useTheme();
 
   return (
@@ -17,6 +17,7 @@ function TitleBar({ title, date }) {
         width: "100%",
         backgroundColor: palette.tertiary.main,
       }}
+      onClick={onClick}
     >
       <Box
         display="flex"
