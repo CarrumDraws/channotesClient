@@ -1,12 +1,15 @@
 import React, { useEffect, useState, forwardRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Fab, SvgIcon } from "@mui/material";
 
-import EditNoteTitle from "../../components/Popups/EditNoteTitle";
+import { ReactComponent as AddNote } from "../../icons/AddNote.svg";
+import { ReactComponent as AddFolder } from "../../icons/AddFolder.svg";
 
 import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
 import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
+
+import NewFolder from "../../components/Popups/FolderPopup";
 
 function Test() {
   const { palette, typography, transitions } = useTheme();
@@ -31,19 +34,73 @@ function Test() {
     handleClose();
   }
 
+  let buttonStyle = {
+    position: "absolute",
+    top: "45%",
+    left: "50%",
+    transform: "translate(-50%, -40%)",
+    transition: "0.2s",
+  };
+
   return (
     <Box>
       <TopbarBuffer />
-      <div>
-        {text}
-        <button onClick={handleOpen}>Show backdrop</button>
-        <EditNoteTitle
-          isOpen={open}
-          handleClose={handleClose}
-          defaultValue={text}
-          handleSubmit={handleSubmit}
-        />
-      </div>
+      <NewFolder
+        isOpen={open}
+        handleClose={handleClose}
+        handleSubmit={handleSubmit}
+      />
+      <Fab
+        size="medium"
+        color="secondary"
+        disableRipple
+        sx={{
+          boxShadow: "none",
+          position: "absolute",
+          bottom: 16,
+          right: 16,
+        }}
+      >
+        <SvgIcon
+          position="absolute"
+          viewBox="0 0 24 27"
+          sx={{ ...buttonStyle, width: "1.5rem" }}
+        >
+          <AddNote
+            stroke={palette.secondary.text}
+            style={{
+              transition: "all .3s linear",
+            }}
+          />
+        </SvgIcon>
+      </Fab>
+      <Fab
+        size="medium"
+        color="secondary"
+        disableRipple
+        sx={{
+          boxShadow: "none",
+          position: "absolute",
+          bottom: 16,
+          right: 100,
+        }}
+      >
+        <SvgIcon
+          position="absolute"
+          viewBox="0 0 25 30"
+          sx={{ ...buttonStyle, height: "2rem", width: "4rem" }}
+        >
+          <AddFolder
+            stroke={palette.secondary.text}
+            style={{
+              transition: "all .3s linear",
+            }}
+          />
+        </SvgIcon>
+      </Fab>
+      {text}
+      <button onClick={handleOpen}>Show backdrop</button>
+
       <NavbarBuffer />
     </Box>
   );

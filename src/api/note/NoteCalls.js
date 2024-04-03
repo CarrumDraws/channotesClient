@@ -21,6 +21,29 @@ async function GetNotes({ chan_token, folder_id, url }) {
   }
 }
 
+async function CreateNote({ url, chan_token, folder_id }) {
+  try {
+    let route = `${url}/note`;
+    let { data, status } = await axios.post(
+      route,
+      {
+        folder_id: folder_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${chan_token}`,
+        },
+      }
+    );
+    if (200 <= status && status < 300) return data;
+    else throw new Error("CreateNote Failed");
+  } catch (error) {
+    if (error?.response?.data?.message)
+      throw new Error(error.response.data.message);
+    else throw error.message;
+  }
+}
+
 async function EditNote({
   url,
   chan_token,
@@ -55,4 +78,4 @@ async function EditNote({
   }
 }
 
-export { GetNotes, EditNote };
+export { GetNotes, CreateNote, EditNote };

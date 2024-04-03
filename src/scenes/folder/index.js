@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Fab, SvgIcon } from "@mui/material";
 
 import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
 import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
@@ -12,8 +12,13 @@ import GroupFM from "../../components/FoldersMenus/Group";
 import Folder from "../../components/FoldersMenus/Folder";
 import Note from "../../components/NotesFriends/Note";
 
-import { GetFolder } from "../../api/folder/FolderCalls";
-import { GetNotes } from "../../api/note/NoteCalls";
+import { ReactComponent as AddNote } from "../../icons/AddNote.svg";
+import { ReactComponent as AddFolder } from "../../icons/AddFolder.svg";
+
+import { GetFolder, CreateFolder } from "../../api/folder/FolderCalls";
+import { GetNotes, CreateNote } from "../../api/note/NoteCalls";
+
+import FolderPopup from "../../components/Popups/FolderPopup";
 
 function FolderPage() {
   const { palette, transitions } = useTheme();
@@ -22,11 +27,59 @@ function FolderPage() {
   const chan_token = useSelector((state) => state.chan_token);
   const url = useSelector((state) => state.url);
 
+  let { folder_id } = useParams(); // If empty, home folder!
+
   const [folders, setFolders] = useState(null);
   const [notes, setNotes] = useState(null);
   const [select, setSelect] = useState(false); // "Selecting" state
+  const [open, setOpen] = useState(false); // Popup State
+  const [type, setType] = useState("new"); // Folder Popup Type
 
-  let { folder_id } = useParams(); // If empty, home folder!
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = (newType) => {
+    console.log("Opened " + newType);
+    setType(newType);
+    setOpen(true);
+  };
+
+  async function createFolder(event) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const formJson = Object.fromEntries(formData.entries());
+    const data = formJson.data;
+    console.log("Title: " + data);
+    try {
+      const res = await CreateFolder({
+        url: url,
+        chan_token: chan_token,
+        folder_id: folder_id,
+        title: data,
+      });
+      navigate(`/folder/${res.id}`);
+    } catch (error) {
+      console.log(error.message);
+      navigate("/error");
+    }
+    handleClose();
+  }
+
+  async function createNote() {
+    console.log("Creating New Note");
+    try {
+      const res = await CreateNote({
+        url: url,
+        chan_token: chan_token,
+        folder_id: folder_id,
+      });
+      console.log(res);
+      navigate(`/note/${res.id}`);
+    } catch (error) {
+      console.log(error.message);
+      navigate("/error");
+    }
+  }
 
   // Get Data
   useEffect(() => {
@@ -67,6 +120,14 @@ function FolderPage() {
     }
     GetNoteData();
   }, [url, chan_token, folder_id]);
+
+  let buttonStyle = {
+    position: "absolute",
+    top: "45%",
+    left: "50%",
+    transform: "translate(-50%, -40%)",
+    transition: "0.2s",
+  };
 
   let shared = {
     id: "3635385c-30d6-42ef-b0fc-62853eeaaf27",
@@ -167,6 +228,71 @@ function FolderPage() {
             </GroupNF>
           </Box>
         )}
+
+        {/* FAB's */}
+        <Fab
+          size="medium"
+          color="secondary"
+          disableRipple
+          sx={{
+            boxShadow: "none",
+            position: "absolute",
+            bottom: 16,
+            right: 100,
+          }}
+          onClick={() => handleOpen("new")}
+        >
+          <SvgIcon
+            position="absolute"
+            viewBox="0 0 25 30"
+            sx={{ ...buttonStyle, height: "2rem", width: "4rem" }}
+          >
+            <AddFolder
+              stroke={palette.secondary.text}
+              style={{
+                transition: "all .3s linear",
+              }}
+            />
+          </SvgIcon>
+        </Fab>
+        <Fab
+          size="medium"
+          color="secondary"
+          disableRipple
+          sx={{
+            boxShadow: "none",
+            position: "absolute",
+            bottom: 16,
+            right: 16,
+          }}
+          onClick={() => createNote()}
+        >
+          <SvgIcon
+            position="absolute"
+            viewBox="0 0 24 27"
+            sx={{ ...buttonStyle, width: "1.5rem" }}
+          >
+            <AddNote
+              stroke={palette.secondary.text}
+              style={{
+                transition: "all .3s linear",
+              }}
+            />
+          </SvgIcon>
+        </Fab>
+        {/* Popups */}
+        <FolderPopup
+          type={type}
+          isOpen={open}
+          handleClose={handleClose}
+          handleSubmit={createFolder}
+        />
+        {/* <FolderPopup
+          type={type}
+          isOpen={open}
+          handleClose={handleClose}
+          handleSubmit={createFolder}
+        /> */}
       </Box>
       <NavbarBuffer />
     </Box>
