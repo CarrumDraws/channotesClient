@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Typography, useTheme, Fab, SvgIcon } from "@mui/material";
+import { Box, Typography, useTheme, Fab } from "@mui/material";
 
 import TopbarBuffer from "../../components/Topbar/TopbarBuffer";
 import NavbarBuffer from "../../components/Navbar/NavbarBuffer";
@@ -35,6 +35,16 @@ function FolderPage() {
   const [open, setOpen] = useState(false); // Popup State
   const [type, setType] = useState("new"); // Folder Popup Type
 
+  let shared = {
+    id: "3635385c-30d6-42ef-b0fc-62853eeaaf27",
+    chan_id: "e71acbab-90c6-4303-bb01-f54436b2fe05",
+    folder_id: null,
+    title: "Shared",
+    date_created: "2023-09-09T18:52:39",
+    notes: 3,
+    folders: [],
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -44,12 +54,43 @@ function FolderPage() {
     setOpen(true);
   };
 
+  // Get Data
+  useEffect(() => {
+    async function getData() {
+      try {
+        // Get Folder Data
+        let res = await GetFolder({
+          url: url,
+          chan_token: chan_token,
+          folder_id: folder_id,
+        });
+        res.folders = res.folders.sort((a, b) => {
+          if (a.special !== b.special) {
+            return a.special ? -1 : 1;
+          }
+          return a.title.localeCompare(b.title);
+        });
+        setFolders(res);
+        // Get Notes Data
+        res = await GetNotes({
+          url: url,
+          chan_token: chan_token,
+          folder_id: folder_id,
+        });
+        setNotes(res);
+      } catch (error) {
+        console.log(error.message);
+        navigate("/error");
+      }
+    }
+    getData();
+  }, [url, chan_token, folder_id, navigate]);
+
   async function createFolder(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
     const data = formJson.data;
-    console.log("Title: " + data);
     try {
       const res = await CreateFolder({
         url: url,
@@ -66,78 +107,18 @@ function FolderPage() {
   }
 
   async function createNote() {
-    console.log("Creating New Note");
     try {
       const res = await CreateNote({
         url: url,
         chan_token: chan_token,
         folder_id: folder_id,
       });
-      console.log(res);
       navigate(`/note/${res.id}`);
     } catch (error) {
       console.log(error.message);
       navigate("/error");
     }
   }
-
-  // Get Data
-  useEffect(() => {
-    // Get Folder
-    async function getFolderData() {
-      try {
-        const res = await GetFolder({
-          url: url,
-          chan_token: chan_token,
-          folder_id: folder_id,
-        });
-        res.folders = res.folders.sort((a, b) => {
-          if (a.special !== b.special) {
-            return a.special ? -1 : 1;
-          }
-          return a.title.localeCompare(b.title);
-        });
-        setFolders(res);
-      } catch (error) {
-        console.log(error.message);
-        navigate("/error");
-      }
-    }
-    getFolderData();
-    // Get Notes
-    async function GetNoteData() {
-      try {
-        const res = await GetNotes({
-          url: url,
-          chan_token: chan_token,
-          folder_id: folder_id,
-        });
-        setNotes(res);
-      } catch (error) {
-        console.log(error.message);
-        navigate("/error");
-      }
-    }
-    GetNoteData();
-  }, [url, chan_token, folder_id]);
-
-  let buttonStyle = {
-    position: "absolute",
-    top: "45%",
-    left: "50%",
-    transform: "translate(-50%, -40%)",
-    transition: "0.2s",
-  };
-
-  let shared = {
-    id: "3635385c-30d6-42ef-b0fc-62853eeaaf27",
-    chan_id: "e71acbab-90c6-4303-bb01-f54436b2fe05",
-    folder_id: null,
-    title: "Shared",
-    date_created: "2023-09-09T18:52:39",
-    notes: 3,
-    folders: [],
-  };
 
   return (
     <Box>
@@ -242,18 +223,12 @@ function FolderPage() {
           }}
           onClick={() => handleOpen("new")}
         >
-          <SvgIcon
-            position="absolute"
-            viewBox="0 0 25 30"
-            sx={{ ...buttonStyle, height: "2rem", width: "4rem" }}
-          >
-            <AddFolder
-              stroke={palette.secondary.text}
-              style={{
-                transition: "all .3s linear",
-              }}
-            />
-          </SvgIcon>
+          <AddFolder
+            stroke={palette.secondary.text}
+            style={{
+              transition: "all .3s linear",
+            }}
+          />
         </Fab>
         <Fab
           size="medium"
@@ -267,19 +242,14 @@ function FolderPage() {
           }}
           onClick={() => createNote()}
         >
-          <SvgIcon
-            position="absolute"
-            viewBox="0 0 24 27"
-            sx={{ ...buttonStyle, width: "1.5rem" }}
-          >
-            <AddNote
-              stroke={palette.secondary.text}
-              style={{
-                transition: "all .3s linear",
-              }}
-            />
-          </SvgIcon>
+          <AddNote
+            stroke={palette.secondary.text}
+            style={{
+              transition: "all .3s linear",
+            }}
+          />
         </Fab>
+
         {/* Popups */}
         <FolderPopup
           type={type}
@@ -287,12 +257,6 @@ function FolderPage() {
           handleClose={handleClose}
           handleSubmit={createFolder}
         />
-        {/* <FolderPopup
-          type={type}
-          isOpen={open}
-          handleClose={handleClose}
-          handleSubmit={createFolder}
-        /> */}
       </Box>
       <NavbarBuffer />
     </Box>
