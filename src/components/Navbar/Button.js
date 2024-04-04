@@ -63,6 +63,7 @@ function Button({ pageType, currPage, setPage, userData = {}, disabled }) {
           }}
         />
       </Box>
+
       <Box
         position="relative"
         height="100%"

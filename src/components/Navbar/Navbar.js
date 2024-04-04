@@ -15,8 +15,8 @@ function Navbar() {
   const firstName = useSelector((state) => state.first_name);
   const chanId = useSelector((state) => state.chan_id);
 
+  // Sets Page Initially
   useEffect(() => {
-    // Sets Page
     switch (location.pathname.split("/")[1]) {
       case "user":
         setPage("profile");
@@ -27,13 +27,26 @@ function Navbar() {
       case "alerts":
         setPage("alerts");
         break;
+      case "note":
+        setPage("note");
+        break;
       default:
         setPage("home");
     }
-  }, []);
+  }, [location]);
 
   return (
-    <Box height="5rem" width="100%" position="fixed" bottom="0" right="0">
+    <Box
+      height="5rem"
+      width="100%"
+      position="fixed"
+      bottom={page === "note" ? "-5rem" : "0rem"}
+      right="0"
+      sx={{
+        transition: "0.2s",
+      }}
+    >
+      {/* Top Gradient */}
       <Box
         height="20%"
         width="100%"
@@ -60,6 +73,7 @@ function Navbar() {
             transitions.duration.short + " " + transitions.easing.easeIn,
         }}
       />
+
       {/* Background color */}
       <Box
         position="absolute"
@@ -67,6 +81,8 @@ function Navbar() {
         width="100%"
         backgroundColor={palette.primary.text}
       />
+
+      {/* Buttons */}
       <Box display="flex" position="absolute" height="80%" width="100%">
         <Button pageType="home" currPage={page} setPage={setPage} />
         <Button pageType="search" currPage={page} setPage={setPage} />

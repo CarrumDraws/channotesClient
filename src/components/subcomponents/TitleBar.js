@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import readDate from "../helperFuncs/readDate.js";
-import { flexbox } from "@mui/system";
 
 function TitleBar({ title, date, onClick }) {
   const { palette, transitions } = useTheme();

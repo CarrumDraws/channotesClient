@@ -218,7 +218,7 @@ function FolderPage() {
           sx={{
             boxShadow: "none",
             position: "absolute",
-            bottom: 16,
+            bottom: 80,
             right: 100,
           }}
           onClick={() => handleOpen("new")}
@@ -237,7 +237,7 @@ function FolderPage() {
           sx={{
             boxShadow: "none",
             position: "absolute",
-            bottom: 16,
+            bottom: 80,
             right: 16,
           }}
           onClick={() => createNote()}
